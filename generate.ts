@@ -52,39 +52,58 @@ function parse(s: string, isCallback: boolean, isMethod: boolean) {
 }
 
 interface PdFunction {
-  t: string;
-  d: string;
+  titleText: string;
+  documentation: string;
   isCallback: boolean;
   isMethod: boolean;
-  p: Exclude<ReturnType<typeof parse>, null>[];
+  parseResults: ParseResult[];
+}
+
+interface ParseResult {
+  table: string;
+  dotOrColon: string;
+  name: string;
+  parameters: string;
+  params: {
+    name: string;
+    optional: boolean;
+  }[];
+  isMethod: boolean;
 }
 
 const funs: PdFunction[] = [
   ...document.querySelectorAll<HTMLElement>(".function, .method, .callback"),
 ]
-  .map((e) => ({
-    t: e.querySelector<HTMLElement>(":scope > .title")?.innerText?.trim() ?? "",
-    d:
-      e.querySelector<HTMLElement>(".content, :scope > p")?.innerText?.trim() ??
-      "",
-    isCallback: e.classList.contains("callback"),
-    isMethod: e.classList.contains("method"),
+  .map((element) => ({
+    titleText:
+      element
+        .querySelector<HTMLElement>(":scope > .title")
+        ?.innerText?.trim() ?? "",
+    documentation:
+      element
+        .querySelector<HTMLElement>(".content, :scope > p")
+        ?.innerText?.trim() ?? "",
+    isCallback: element.classList.contains("callback"),
+    isMethod: element.classList.contains("method"),
   }))
-  .filter((i) => i.t)
-  .map((i) => ({
-    ...i,
+  .filter((item) => item.titleText)
+  .map((item) => ({
+    ...item,
     isMethod:
-      (i.isMethod || (i.isCallback && /\s*[\w.]+:/.test(i.t))) &&
-      i.t !== "playdate.keyboard.hide()",
+      (item.isMethod ||
+        (item.isCallback && /\s*[\w.]+:/.test(item.titleText))) &&
+      item.titleText !== "playdate.keyboard.hide()",
   }))
-  .map((i) => ({
-    ...i,
-    p: i.t
+  .map((item) => ({
+    ...item,
+    parseResults: item.titleText
       .split("\n")
-      .map((o) => parse(o, i.isCallback, i.isMethod))
-      .filter((_) => _),
+      .map((overloadLine) =>
+        parse(overloadLine, item.isCallback, item.isMethod)
+      )
+      .filter((_) => _) as ParseResult[],
   }))
-  .filter((_) => _.p.length) as PdFunction[];
+  .filter((_) => _.parseResults.length);
 
 interface TreeFunction {
   name: string;
@@ -110,9 +129,15 @@ interface Tree {
 
 var tree = {} as Tree;
 
-for (const { t, d, p, isCallback, isMethod } of funs) {
-  if (!p[0].table) continue;
-  const path = p[0].table.split(".");
+for (const {
+  titleText,
+  documentation,
+  parseResults,
+  isCallback,
+  isMethod,
+} of funs) {
+  if (!parseResults[0].table) continue;
+  const path = parseResults[0].table.split(".");
   const prev = [] as string[];
   var step = tree;
   while (path.length) {
@@ -121,13 +146,13 @@ for (const { t, d, p, isCallback, isMethod } of funs) {
       ({
         name: path[0],
         dupe: prev.includes(path[0]), //file.file
-        fullname: p[0].table,
+        fullname: parseResults[0].table,
         fields: {},
       } as TreeClass);
     step = (step[path[0]] as TreeClass).fields;
     prev.push(path.shift() as string);
   }
-  for (const overload of p) {
+  for (const overload of parseResults) {
     let existing = step[
       overload.name + "|" + isCallback + "|" + overload.dotOrColon
     ] as TreeFunction | undefined;
@@ -138,15 +163,15 @@ for (const { t, d, p, isCallback, isMethod } of funs) {
         name: overload.name,
         fullname: overload.table + overload.dotOrColon + overload.name,
         parameterSets: [],
-        doc: d,
-        docs: [d],
+        doc: documentation,
+        docs: [documentation],
         isMethod: isMethod,
         isCallback: isCallback,
         dotOrColon: overload.dotOrColon,
       };
     } else {
-      if (!existing.docs.includes(d)) {
-        existing.docs.push(d);
+      if (!existing.docs.includes(documentation)) {
+        existing.docs.push(documentation);
         existing.doc = existing.docs
           .map((s, i) => `## Overload ${i + 1} ##\n` + s)
           .join("\n\n");
@@ -154,7 +179,6 @@ for (const { t, d, p, isCallback, isMethod } of funs) {
     }
     existing.parameterSets.push(overload.params);
   }
-  // fixme: sprite.update // sprite:update
 }
 
 function isFunction(t: TreeClass | TreeFunction): t is TreeFunction {
@@ -220,7 +244,7 @@ function add(step: TreeClass | TreeFunction, parentType: string) {
       overloads.length > 1
         ? overloads.map((o) => "(" + o + ")").join(" | ")
         : overloads[0];
-    //result.push(`---@field ${step.name} fun(${typedParams.join(", ")})${ret}`);
+
     if (step.doc) {
       result.push(...step.doc.split("\n").map((l) => "--- " + l));
     }
@@ -237,10 +261,6 @@ function add(step: TreeClass | TreeFunction, parentType: string) {
     }
     tbd.push(step);
   }
-  /*if (step.fields) {
-		const type = "pd_" + step.name;
-        Object.values(step.fields).forEach(f=>add(f, type));
-    }*/
 }
 
 writePrefix(
