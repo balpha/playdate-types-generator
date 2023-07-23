@@ -1,0 +1,15 @@
+{
+  "name": "playdate-types-generator",
+  "version": "1.0.0",
+  "main": "generate.ts",
+  "author": "Benjamin Dumke-von der Ehe <mail@benjamin-dumke.de>",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "rollup": "^3.26.3",
+    "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "copy": "mkdir -p tmp && rm -f tmp/* && tsc && ( rollup tmp/generate.js --format iife | xclip -i -selection clipboard )"
+  }
+}
