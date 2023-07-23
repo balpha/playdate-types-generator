@@ -1,4 +1,6 @@
+import { writeConstantFields } from "./constants";
 import { HARDCODED_TYPES } from "./hardcoded_types";
+import { writePrefix } from "./prefix";
 
 function parse(s: string, isCallback: boolean, isMethod: boolean) {
   if (isCallback && !/\(/.test(s)) {
@@ -157,7 +159,7 @@ function isFunction(t: TreeClass | TreeFunction): t is TreeFunction {
   return "parameterSets" in t;
 }
 
-var result = [];
+var result = [] as string[];
 var tbd = [...Object.values(tree)] as TreeClass[];
 var unknowns = JSON.parse(JSON.stringify(HARDCODED_TYPES));
 function add(step: TreeClass | TreeFunction, parentType: string) {
@@ -429,106 +431,11 @@ function add(step: TreeClass | TreeFunction, parentType: string) {
     }*/
 }
 
-var source_types = [
-  "pd_fileplayer",
-  "pd_sampleplayer",
-  "pd_synth",
-  "pd_instrument",
-].join(" | ");
-
-var effect_types = [
-  "pd_bitcrusher",
-  "pd_twopolefilter",
-  "pd_onepolefilter",
-  "pd_ringmod",
-  "pd_overdrive",
-  "pd_delayline",
-].join(" | ");
-
-[
-  "---@meta",
-  "",
-  "---@type pd_playdate_lib",
-  "playdate = playdate",
-  "",
-  "---@type pd_json_lib",
-  "json = json",
-  "",
-  "---@alias pd_pattern integer[]",
-  "",
-  "---@type table<string, pd_text_alignment>",
-  "kTextAlignment = kTextAlignment",
-  "",
-  "---@alias pd_font_family table<pd_font_variant, pd_font>",
-  "",
-  "---@alias pd_source " + source_types,
-  "",
-  "---@alias pd_effect " + effect_types,
-  "",
-].forEach((l) => result.push(l));
-
-[
-  "pd_UNKNOWN",
-  "pd_button",
-  "pd_text_alignment",
-  "pd_flip",
-  "pd_image_flip",
-  "pd_color",
-  "pd_dither_type",
-  "pd_draw_mode",
-  "pd_language",
-  "pd_filemode",
-  "pd_line_cap_style",
-  "pd_polygon_fill_rule",
-  "pd_stroke_location",
-  "pd_font_variant",
-  "pd_capitalization",
-].forEach((c) => result.push(`---@class ${c}`));
-
-result.push("", "---@class pd_time_table");
-[
-  "year",
-  "month",
-  "day",
-  "weekday",
-  "hour",
-  "minute",
-  "second",
-  "millisecond",
-].forEach((f) => result.push(`---@field ${f} number`));
-
-result.push("", "---@class pd_input_handler");
-[
-  "AButtonDown",
-  "AButtonHeld",
-  "AButtonUp",
-  "BButtonDown",
-  "BButtonHeld",
-  "BButtonUp",
-  "downButtonDown",
-  "downButtonUp",
-  "leftButtonDown",
-  "leftButtonUp",
-  "rightButtonDown",
-  "rightButtonUp",
-  "upButtonDown",
-  "upButtonUp",
-  "cranked",
-].forEach((n) => {
-  const doc = (
-    (tree.playdate as TreeClass).fields[n + "|true|."] as TreeFunction
-  ).doc;
-  const type =
-    n === "cranked"
-      ? "fun(change: number, acceleratedChange: number)"
-      : "fun()";
-  result.push(...doc.split("\n").map((l) => "--- " + l));
-  result.push(`---@field ${n} nil | (${type})`);
-});
-
-function constants(prefix: string, type: string, values: string[]) {
-  values.forEach((v) => result.push(`---@field ${prefix}${v} ${type}`));
-}
+writePrefix(
+  result,
+  (name) =>
+    ((tree.playdate as TreeClass).fields[name + "|true|."] as TreeFunction).doc
+);
 
 while (true) {
   const step = tbd.shift() as TreeClass;
@@ -549,75 +456,8 @@ while (true) {
     `---@class ${step.fullname === "table" ? "tablelib" : type + "_lib"}`
   );
   statics.forEach((s) => add(s, type + "_lib"));
-  if (step.name === "playdate") {
-    constants("kButton", "pd_button", [
-      "A",
-      "B",
-      "Up",
-      "Down",
-      "Left",
-      "Right",
-    ]);
-  } else if (step.name === "graphics") {
-    constants("kColor", "pd_color", ["Black", "White", "Clear", "XOR"]);
-    constants("kDrawMode", "pd_draw_mode", [
-      "Copy",
-      "WhiteTransparent",
-      "BlackTransparent",
-      "FillWhite",
-      "FillBlack",
-      "XOR",
-      "NXOR",
-      "Inverted",
-    ]);
-    constants("kLineCapStyle", "pd_line_cap_style", [
-      "Butt",
-      "Round",
-      "Square",
-    ]);
-    constants("kPolygonFill", "pd_polygon_fill_rule", ["NonZero", "EvenOdd"]);
-    constants("kStroke", "pd_stroke_location", [
-      "Centered",
-      "Outside",
-      "Inside",
-    ]);
-    constants("kVariant", "pd_font_variant", ["Normal", "Bold", "Italic"]);
-  } else if (step.name === "image") {
-    constants("kDitherType", "pd_dither_type", [
-      "None",
-      "DiagonalLine",
-      "VerticalLine",
-      "HorizontalLine",
-      "Screen",
-      "Bayer2x2",
-      "Bayer4x4",
-      "Bayer8x8",
-      "FloydSteinberg",
-      "Burkes",
-      "Atkinson",
-    ]);
-  } else if (step.name === "font") {
-    constants("kLanguage", "pd_language", ["English", "Japanese"]);
-  } else if (step.name === "file") {
-    constants("kFile", "pd_filemode", ["Read", "Write", "Append"]);
-  } else if (step.name === "keyboard") {
-    constants("kCapitalization", "pd_capitalization", [
-      "Normal,",
-      "Words",
-      "Sentences",
-    ]);
-  }
 
-  if (["geometry", "graphics"].includes(step.name)) {
-    const imageOrNot = step.name === "graphics" ? "Image" : "";
-    const fliptype = step.name === "graphics" ? "pd_image_flip" : "pd_flip";
-    constants("k" + imageOrNot, fliptype, [
-      "Unflipped",
-      "FlippedX",
-      "FlippedY",
-      "FlippedXY",
-    ]);
-  }
+  writeConstantFields(result, step.name);
 
   const methods = Object.values(step.fields).filter(
     (f) => isFunction(f) && f.isMethod
