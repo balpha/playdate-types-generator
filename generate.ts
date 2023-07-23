@@ -1,5 +1,7 @@
 import { writeConstantFields } from "./constants";
 import { HARDCODED_TYPES } from "./hardcoded_types";
+import { inferParameterType } from "./infer_parameter_type";
+import { inferReturnType } from "./infer_return_type";
 import { writePrefix } from "./prefix";
 
 function parse(s: string, isCallback: boolean, isMethod: boolean) {
@@ -176,150 +178,16 @@ function add(step: TreeClass | TreeFunction, parentType: string) {
       }
       params.forEach((pDef) => {
         const pName = pDef.name;
-        let pType: string | null = "pd_UNKNOWN";
-        if (
-          parentType === "pd_easingFunctions_lib" &&
-          ["t", "b", "c", "d", "a", "p", "s"].includes(pName)
-        ) {
-          pType = "number";
-        } else if (
-          [
-            "x",
-            "y",
-            "width",
-            "height",
-            "scale",
-            "yscale",
-            "radius",
-            "seconds",
-            "milliseconds",
-            "rate",
-            "yScale",
-            "delay",
-            "length",
-            "leadingAdjustment",
-            "count",
-            "ms",
-            "alpha",
-            "duration",
-            "angle",
-            "pixels",
-            "w",
-            "h",
-            "row",
-            "column",
-            "left",
-            "right",
-            "top",
-            "bottom",
-          ].includes(pName) ||
-          /^([sd][xy]|[xywh]\d|row\d|.*Count|(min|max)|\w+(Width|Height|Angle|X|Y|Value))$/.test(
-            pName
-          )
-        ) {
-          pType = "number";
-        } else if (
-          [
-            "path",
-            "text",
-            "title",
-            "filename",
-            "string",
-            "truncationString",
-          ].includes(pName)
-        ) {
-          pType = "string";
-        } else if (["disable", "flag", "pretty-print"].includes(pName)) {
-          pType = "boolean";
-        } else if (/callback$/i.test(pName)) {
-          pType = "fun()";
-        } else if (["color", "bgcolor", "backgroundColor"].includes(pName)) {
-          pType = "pd_color";
-        } else if (/rect$/i.test(pName)) {
-          pType = "pd_rect";
-        } else if (/^image\d?$/.test(pName)) {
-          pType = "pd_image";
-        } else if (["button"].includes(pName)) {
-          pType = "pd_button";
-        } else if (["table"].includes(pName)) {
-          pType = "table";
-        } else if (["imageTable"].includes(pName)) {
-          pType = "pd_imagetable";
-        } else if (["element"].includes(pName)) {
-          pType = "any";
-        } else if (["fontFamily"].includes(pName)) {
-          pType = "pd_font_family";
-        } else if (["pattern"].includes(pName)) {
-          pType = "pd_pattern";
-        } else if (["language"].includes(pName)) {
-          pType = "pd_language";
-        } else if (["alignment"].includes(pName)) {
-          pType = "pd_text_alignment";
-        } else if (["file"].includes(pName)) {
-          pType = "pd_file_file";
-        } else if (["easingFunction"].includes(pName)) {
-          pType = "(fun(number, number, number, number): number)";
-        } else if (["font"].includes(pName)) {
-          pType = "pd_font";
-        } else if (["variant"].includes(pName)) {
-          pType = "pd_font_variant";
-        } else if (["ditherType"].includes(pName)) {
-          pType = "pd_dither_type";
-        } else if (/^flip\d?$/.test(pName)) {
-          pType = parentType === "pd_rect" ? "pd_flip" : "pd_image_flip";
-        } else if (/sprite$/i.test(pName)) {
-          pType = "pd_sprite";
-        } else if (["eightRows"].includes(pName)) {
-          pType = "number[]";
-        } else if (["character"].includes(pName)) {
-          pType = "string|number";
-        } else if (["effect"].includes(pName)) {
-          pType = "pd_effect";
-        } else if (["node"].includes(pName)) {
-          pType = "pd_node";
-        } else if (pName === "mode" && step.name === "setImageDrawMode") {
-          pType = "pd_draw_mode";
-        } else if (
-          ["r", "r2"].includes(pName) &&
-          (/rect/i.test(step.name) || parentType === "pd_rect")
-        ) {
-          pType = "pd_rect";
-        } else if (
-          pName === "point" ||
-          (pName === "p" && /point p/i.test(step.doc))
-        ) {
-          pType = "pd_point";
-        } else if (pName === "v" && parentType === "pd_vector2D") {
-          pType = "pd_vector2D";
-        } else if (
-          parentType === "pd_synth" &&
-          [
-            "pitch",
-            "volume",
-            "when",
-            "attack",
-            "decay",
-            "sustain",
-            "release",
-            "time",
-            "amount",
-            "left",
-            "right",
-          ].includes(pName)
-        ) {
-          pType = "number";
-        }
-        if (
-          new RegExp("if " + pName + " is (true|false)", "i").test(step.doc)
-        ) {
-          pType = "boolean";
-        }
+
+        let pType: string | null;
 
         if (
           step.fullname in HARDCODED_TYPES &&
           pName in HARDCODED_TYPES[step.fullname]
         ) {
-          pType = HARDCODED_TYPES[step.fullname][pName]; //even if null!
+          pType = HARDCODED_TYPES[step.fullname][pName];
+        } else {
+          pType = inferParameterType(pName, step.name, step.doc, parentType);
         }
 
         const question = pDef.optional ? "?" : "";
@@ -331,71 +199,15 @@ function add(step: TreeClass | TreeFunction, parentType: string) {
           unknowns[step.fullname][pName] = "";
         }
       });
-      let returnType =
-        step.name === "new" ? parentType.replace(/_lib$/, "") : null;
-      function attempt(
-        s: string,
-        re: RegExp,
-        f: (...args: string[]) => string
-      ) {
-        if (returnType) {
-          return;
-        }
-        const m = (s ?? "").match(re);
-        if (!m) {
-          return;
-        }
-        returnType = f.apply(null, m);
-      }
-      attempt(
-        step.doc,
-        /as a list: \(seconds, milliseconds\)/,
-        () => "(number, number)"
-      );
-      attempt(step.doc, /(returns|gets) (the|a) number/i, () => "number"); // couild be a list!
-      attempt(step.doc, /returns? (?:true|false|a bool)/i, () => "boolean");
-      attempt(
-        step.name,
-        /^get.*(?:height|width|tracking|leading|rate|volume|offset,length)/i,
-        () =>
-          step.name === "getTextSizeForMaxWidth" ? "(number, number)" : "number"
-      );
-      attempt(step.name, /^get.*rect/i, () => "pd_rect");
-      attempt(step.name, /^get.*image/i, () => "pd_image");
-      attempt(step.name, /^get.*color/i, () => "pd_color");
-      attempt(step.name, /^(?:is|has|did)[A-Z]/i, () => "boolean");
-      attempt(step.doc, /^returns a new /i, () =>
-        parentType.replace(/_lib$/, "")
-      );
-      attempt(parentType, /^pd_easingFunctions_lib$/, () => "number");
-      attempt(step.doc, /^returns a table/i, () => "table");
-      attempt(step.doc, /^returns a string/i, () => "string");
-      attempt(
-        step.doc,
-        /^returns a (new )?(playdate\.geometry\.)?vector/i,
-        () => "pd_vector2D"
-      );
-      attempt(
-        step.doc,
-        /^returns a playdate\.geometry\.point/i,
-        () => "pd_point"
-      );
-      attempt(step.doc, /^returns the length/i, () => "number");
-      attempt(
-        step.doc,
-        /^returns[^.]* \(width, height\)/i,
-        () => "(number, number)"
-      );
-      if (parentType === "pd_affineTransform") {
-        attempt(step.name, /^[a-z]+edBy$/, () => parentType); // "translatedBy" etc.
-      }
 
-      attempt(step.doc, /return|^get/i, () => "pd_UNKNOWN");
+      let returnType: string | null;
       if (
         step.fullname in HARDCODED_TYPES &&
         "__return" in HARDCODED_TYPES[step.fullname]
       ) {
-        returnType = HARDCODED_TYPES[step.fullname].__return; //even if null!
+        returnType = HARDCODED_TYPES[step.fullname].__return;
+      } else {
+        returnType = inferReturnType(step.name, step.doc, parentType);
       }
       const ret = returnType ? `: ${returnType}` : "";
       overloads.push(`fun(${typedParams.join(", ")})${ret}`);
