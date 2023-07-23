@@ -126,7 +126,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.file.open": {
       mode: "pd_filemode",
-      __return: "pd_file",
+      __return: "pd_file_file",
     },
     "playdate.file.listFiles": {
       showhidden: "boolean",
