@@ -677,7 +677,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       lineSegment: "pd_lineSegment",
     },
     "playdate.graphics.sprite.querySpriteInfoAlongLine": {
-      __return: "pd_line_collision_info[]",
+      __return: "(pd_line_collision_info[], integer)",
       lineSegment: "pd_lineSegment",
     },
     "playdate.graphics.sprite.addEmptyCollisionSprite": {
