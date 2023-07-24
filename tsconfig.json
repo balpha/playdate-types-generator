@@ -6,5 +6,5 @@
     "module": "ESNext",
     "outDir": "tmp"
   },
-  "include": ["*.ts"]
+  "include": ["src/*.ts"]
 }
