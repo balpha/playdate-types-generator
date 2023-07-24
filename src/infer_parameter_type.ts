@@ -59,18 +59,14 @@ export function inferParameterType(
     inferredType = "string";
   } else if (["disable", "flag", "pretty-print"].includes(parameterName)) {
     inferredType = "boolean";
-  } else if (/callback$/i.test(parameterName)) {
-    inferredType = "fun()";
   } else if (["color", "bgcolor", "backgroundColor"].includes(parameterName)) {
     inferredType = "pd_color";
   } else if (/rect$/i.test(parameterName)) {
     inferredType = "pd_rect";
-  } else if (/^image\d?$/.test(parameterName)) {
+  } else if (/^(background)?image\d?$/i.test(parameterName)) {
     inferredType = "pd_image";
   } else if (["button"].includes(parameterName)) {
     inferredType = "pd_button";
-  } else if (["table"].includes(parameterName)) {
-    inferredType = "table";
   } else if (["imageTable"].includes(parameterName)) {
     inferredType = "pd_imagetable";
   } else if (["element"].includes(parameterName)) {
@@ -83,9 +79,13 @@ export function inferParameterType(
     inferredType = "pd_language";
   } else if (["alignment"].includes(parameterName)) {
     inferredType = "pd_text_alignment";
+  } else if (["signal"].includes(parameterName)) {
+    inferredType = "pd_signal";
+  } else if (["track"].includes(parameterName)) {
+    inferredType = "pd_track";
   } else if (["file"].includes(parameterName)) {
     inferredType = "pd_file_file";
-  } else if (["easingFunction"].includes(parameterName)) {
+  } else if (/easingfunction$/i.test(parameterName)) {
     inferredType = "(fun(number, number, number, number): number)";
   } else if (["font"].includes(parameterName)) {
     inferredType = "pd_font";

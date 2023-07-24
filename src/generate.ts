@@ -10,38 +10,81 @@ interface PdFunction {
   documentation: string;
   isCallback: boolean;
   isMethod: boolean;
+  isVariable: boolean;
   parseResults: SuccessfulParseResult[];
 }
 
 export function generateAnnotation() {
   const funs = [] as PdFunction[];
   const elements = document.querySelectorAll<HTMLElement>(
-    ".function, .method, .callback"
+    ".function, .method, .callback, .variable"
   );
   for (let element of elements) {
     const titleText = element
       .querySelector<HTMLElement>(":scope > .title")
-      ?.innerText?.trim();
+      ?.innerText?.trim()
+      .replace(
+        "playdate.ui.gridview:setNumberOfRows(…​)",
+        "playdate.ui.gridview:setNumberOfRows(count1, ...)"
+      );
 
     if (!titleText) {
       continue;
     }
 
-    const documentation =
+    let documentation =
       element
         .querySelector<HTMLElement>(".content, :scope > p")
         ?.innerText?.trim() ?? "";
 
     const isCallback = element.classList.contains("callback");
+    const isVariable = element.classList.contains("variable");
     const isMethod =
       (element.classList.contains("method") ||
-        (isCallback && /\s*[\w.]+:/.test(titleText))) &&
-      titleText !== "playdate.keyboard.hide()";
+        /\s*[\w.]+:/.test(titleText) ||
+        ((isVariable || isCallback) &&
+          /^playdate\.(frame)?timer\./i.test(titleText)) ||
+        titleText.startsWith("playdate.crankIndicator")) &&
+      !["playdate.keyboard.hide()"].includes(titleText);
 
     const parseResults = titleText
       .split("\n")
-      .map((overloadLine) => parse(overloadLine, isCallback, isMethod))
+      .map((overloadLine) =>
+        parse(overloadLine, isCallback, isMethod, isVariable)
+      )
       .filter(isSuccessful);
+
+    let otherFun: PdFunction | null = null;
+
+    if (
+      titleText === "playdate.sound.sample.new(path)" &&
+      documentation.includes("playdate.sound.sample.new(seconds, [format])")
+    ) {
+      // the docs are incorrectly formatted here
+      const bothDocs = documentation
+        .split("playdate.sound.sample.new(seconds, [format])")
+        .map((s) => s.trim());
+      documentation = bothDocs[0];
+      const otherDocumentation = bothDocs[1];
+      const otherTitleText = "playdate.sound.sample.new(seconds, [format])";
+      const otherParseResult = parse(
+        otherTitleText,
+        isCallback,
+        isMethod,
+        isVariable
+      );
+
+      if (isSuccessful(otherParseResult)) {
+        otherFun = {
+          titleText: otherTitleText,
+          documentation: otherDocumentation,
+          isCallback,
+          isMethod,
+          isVariable,
+          parseResults: [otherParseResult],
+        };
+      }
+    }
 
     if (parseResults.length) {
       funs.push({
@@ -49,12 +92,29 @@ export function generateAnnotation() {
         documentation,
         isCallback,
         isMethod,
+        isVariable,
         parseResults,
       });
     }
+    if (otherFun) {
+      funs.push(otherFun);
+    }
   }
 
-  interface TreeFunction {
+  ["x", "y", "id"].forEach((n) => {
+    const line = "playdate.pathfinder.node." + n;
+    funs.push({
+      titleText: line,
+      documentation:
+        "You can directly read or write x, y and id values on a playdate.pathfinder.node.",
+      isCallback: false,
+      isMethod: true,
+      isVariable: true,
+      parseResults: [parse(line, false, true, true) as SuccessfulParseResult],
+    });
+  });
+
+  interface TreeFunctionOrVariable {
     name: string;
     fullname: string;
     parameterSets: { name: string; optional: boolean }[][];
@@ -62,6 +122,7 @@ export function generateAnnotation() {
     docs: string[];
     isMethod: boolean;
     isCallback: boolean;
+    isVariable: boolean;
     dotOrColon: string;
   }
 
@@ -73,7 +134,7 @@ export function generateAnnotation() {
   }
 
   interface Tree {
-    [s: string]: TreeClass | TreeFunction;
+    [s: string]: TreeClass | TreeFunctionOrVariable;
   }
 
   var tree = {} as Tree;
@@ -84,6 +145,7 @@ export function generateAnnotation() {
     parseResults,
     isCallback,
     isMethod,
+    isVariable,
   } of funs) {
     if (!parseResults[0].table) continue;
     const path = parseResults[0].table.split(".");
@@ -102,13 +164,15 @@ export function generateAnnotation() {
       prev.push(path.shift() as string);
     }
     for (const overload of parseResults) {
-      let existing = step[
-        overload.name + "|" + isCallback + "|" + overload.dotOrColon
-      ] as TreeFunction | undefined;
+      const stepKey =
+        overload.name +
+        "|" +
+        isCallback +
+        "|" +
+        (isVariable ? "*" : overload.dotOrColon);
+      let existing = step[stepKey] as TreeFunctionOrVariable | undefined;
       if (!existing) {
-        existing = step[
-          overload.name + "|" + isCallback + "|" + overload.dotOrColon
-        ] = {
+        existing = step[stepKey] = {
           name: overload.name,
           fullname: overload.table + overload.dotOrColon + overload.name,
           parameterSets: [],
@@ -116,13 +180,14 @@ export function generateAnnotation() {
           docs: [documentation],
           isMethod: isMethod,
           isCallback: isCallback,
+          isVariable: isVariable,
           dotOrColon: overload.dotOrColon,
         };
       } else {
         if (!existing.docs.includes(documentation)) {
           existing.docs.push(documentation);
           existing.doc = existing.docs
-            .map((s, i) => `## Overload ${i + 1} ##\n` + s)
+            .map((s, i) => `### Overload ${i + 1} ###\n` + s)
             .join("\n\n");
         }
       }
@@ -130,15 +195,17 @@ export function generateAnnotation() {
     }
   }
 
-  function isFunction(t: TreeClass | TreeFunction): t is TreeFunction {
+  function isFunctionOrVariable(
+    t: TreeClass | TreeFunctionOrVariable
+  ): t is TreeFunctionOrVariable {
     return "parameterSets" in t;
   }
 
   var result = [] as string[];
   var tbd = [...Object.values(tree)] as TreeClass[];
   var unknowns = JSON.parse(JSON.stringify(HARDCODED_TYPES));
-  function add(step: TreeClass | TreeFunction, parentType: string) {
-    if (isFunction(step)) {
+  function add(step: TreeClass | TreeFunctionOrVariable, parentType: string) {
+    if (isFunctionOrVariable(step)) {
       const overloads = [];
       let isCallback = false;
       for (const params of step.parameterSets) {
@@ -173,20 +240,42 @@ export function generateAnnotation() {
           }
         });
 
+        const hardcodingKey: string = step.isVariable ? "__value" : "__return";
+
         let returnType: string | null;
         if (
           step.fullname in HARDCODED_TYPES &&
-          "__return" in HARDCODED_TYPES[step.fullname]
+          hardcodingKey in HARDCODED_TYPES[step.fullname]
         ) {
-          returnType = HARDCODED_TYPES[step.fullname].__return;
+          returnType = HARDCODED_TYPES[step.fullname][hardcodingKey];
         } else {
           returnType = inferReturnType(step.name, step.doc, parentType);
+          if (!returnType && step.isVariable) {
+            if (/If (true|false)\b/.test(step.doc)) {
+              returnType = "boolean";
+            } else if (/^(The n|N)umber of /.test(step.doc)) {
+              returnType = "number";
+            } else {
+              returnType = inferParameterType(
+                step.name,
+                step.name,
+                step.doc,
+                parentType
+              );
+            }
+          }
         }
         const ret = returnType ? `: ${returnType}` : "";
-        overloads.push(`fun(${typedParams.join(", ")})${ret}`);
+        overloads.push(
+          step.isVariable ? returnType : `fun(${typedParams.join(", ")})${ret}`
+        );
+        if (step.fullname === "playdate.graphics.sprite:collisionResponse") {
+          // this may also be set to the value directly, instead of setting a callback
+          overloads.push("pd_collision_type");
+        }
         if (returnType === "pd_UNKNOWN") {
           unknowns[step.fullname] ??= {};
-          unknowns[step.fullname].__return = "";
+          unknowns[step.fullname][hardcodingKey] = "";
         }
       }
       const allTypes =
@@ -206,7 +295,8 @@ export function generateAnnotation() {
       if (step.dupe) {
         result.push(`---@field ${step.name} pd_${step.name}_${step.name}_lib`);
       } else {
-        result.push(`---@field ${step.name} pd_${step.name}_lib`);
+        const suffix = step.name === "crankIndicator" ? "" : "_lib";
+        result.push(`---@field ${step.name} pd_${step.name}${suffix}`);
       }
       tbd.push(step);
     }
@@ -215,9 +305,28 @@ export function generateAnnotation() {
   writePrefix(
     result,
     (name) =>
-      ((tree.playdate as TreeClass).fields[name + "|true|."] as TreeFunction)
-        .doc
+      (
+        (tree.playdate as TreeClass).fields[
+          name + "|true|."
+        ] as TreeFunctionOrVariable
+      ).doc
   );
+
+  function isInstanceField(
+    f: TreeClass | TreeFunctionOrVariable,
+    parentType: string
+  ) {
+    if (!isFunctionOrVariable(f)) {
+      return false;
+    }
+    if (f.isMethod) {
+      return true;
+    }
+    if (f.isVariable) {
+      return parentType !== "pd_playdate" && parentType !== "pd_keyboard";
+    }
+    return false;
+  }
 
   while (true) {
     const step = tbd.shift() as TreeClass;
@@ -231,29 +340,38 @@ export function generateAnnotation() {
         ? `pd_${step.name}_${step.name}`
         : `pd_${step.name}`;
     const statics = Object.values(step.fields).filter(
-      (f) => !isFunction(f) || !f.isMethod
+      (f) => !isInstanceField(f, type)
     );
-    result.push("");
-    result.push(
-      `---@class ${step.fullname === "table" ? "tablelib" : type + "_lib"}`
-    );
-    statics.forEach((s) => add(s, type + "_lib"));
 
-    writeConstantFields(result, step.name);
-
-    const methods = Object.values(step.fields).filter(
-      (f) => isFunction(f) && f.isMethod
-    );
-    if (methods.length) {
+    if (type !== "pd_crankIndicator") {
       result.push("");
-      result.push(`---@class ${step.fullname === "table" ? "tablelib" : type}`);
-      methods.forEach((s) => add(s, type));
+      result.push(
+        `---@class ${step.fullname === "table" ? "tablelib" : type + "_lib"}`
+      );
+      statics.forEach((s) => add(s, type + "_lib"));
+
+      writeConstantFields(result, step.name);
+    }
+
+    const instanceFields = Object.values(step.fields).filter((f) =>
+      isInstanceField(f, type)
+    );
+    if (instanceFields.length) {
+      const ext = ["pd_lfo", "pd_envelope", "pd_controlsignal"].includes(type)
+        ? " : pd_signal"
+        : "";
+      result.push("");
+      result.push(
+        `---@class ${step.fullname === "table" ? "tablelib" : type}${ext}`
+      );
+      instanceFields.forEach((s) => add(s, type));
     }
   }
 
   return {
     annotationFile: result.join("\n"),
-    unknownsAndHardcoded: JSON.stringify(unknowns, undefined, 2),
+    unknownsAndHardcodedJSON: JSON.stringify(unknowns, undefined, 2),
+    unknownsAndHardcoded: unknowns,
   };
 }
 //@ts-ignore

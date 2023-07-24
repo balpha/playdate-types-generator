@@ -34,14 +34,49 @@ export function writePrefix(
     "",
     "---@alias pd_font_family table<pd_font_variant, pd_font>",
     "",
+    "---@alias pd_font_family_paths table<pd_font_variant, string>",
+    "",
     "---@alias pd_source " + source_types,
     "",
     "---@alias pd_effect " + effect_types,
+    "",
+    "---@class pd_event",
+    "---@field step number",
+    "---@field value number",
+    "---@field interpolate boolean? -- ?",
+    "",
+    "---@class pd_line_collision_info",
+    "---@field sprite pd_sprite",
+    "---@field entryPoint pd_point",
+    "---@field exitPoint pd_point",
+    "---@field ti1 number",
+    "---@field ti2 number",
+    "",
+    "---@class pd_sprite_collision_info",
+    "---@field sprite pd_sprite",
+    "---@field other pd_sprite",
+    "---@field type pd_collision_type",
+    "---@field overlaps boolean",
+    "---@field ti number",
+    "---@field move pd_vector2D",
+    "---@field normal pd_vector2D",
+    "---@field touch pd_point",
+    "---@field spriteRect pd_rect",
+    "---@field otherRect pd_rect",
+    "---@field bounce pd_point?",
+    "---@field slide pd_point?",
+    "",
+    "---@class pd_note_table",
+    "---@field step number",
+    "---@field note number",
+    "---@field length number",
+    "---@field velocity number",
     "",
   ].forEach((l) => result.push(l));
 
   [
     "pd_UNKNOWN",
+    "pd_UNDOCUMENTED",
     "pd_button",
     "pd_text_alignment",
     "pd_flip",
@@ -56,6 +91,11 @@ export function writePrefix(
     "pd_stroke_location",
     "pd_font_variant",
     "pd_capitalization",
+    "pd_collision_type",
+    "pd_sound_format",
+    "pd_waveform",
+    "pd_lfo_type",
+    "pd_sound_filter",
   ].forEach((c) => result.push(`---@class ${c}`));
 
   result.push("", "---@class pd_time_table");
@@ -69,6 +109,11 @@ export function writePrefix(
     "second",
     "millisecond",
   ].forEach((f) => result.push(`---@field ${f} number`));
+
+  result.push("", "---@class pd_file_time_table");
+  ["year", "month", "day", "hour", "minute", "second"].forEach((f) =>
+    result.push(`---@field ${f} number`)
+  );
 
   result.push("", "---@class pd_input_handler");
   [

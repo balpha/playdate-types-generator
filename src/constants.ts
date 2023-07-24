@@ -56,9 +56,50 @@ export function writeConstantFields(result: string[], name: string) {
     constants("kFile", "pd_filemode", ["Read", "Write", "Append"]);
   } else if (name === "keyboard") {
     constants("kCapitalization", "pd_capitalization", [
-      "Normal,",
+      "Normal",
       "Words",
       "Sentences",
+    ]);
+  } else if (name === "sprite") {
+    constants("kCollisionType", "pd_collision_type", [
+      "Slide",
+      "Freeze",
+      "Overlap",
+      "Bounce",
+    ]);
+  } else if (name === "sound") {
+    constants("kFormat", "pd_sound_format", [
+      "8bitMono",
+      "8bitStereo",
+      "16bitMono",
+      "16bitStereo",
+    ]);
+    constants("kWave", "pd_waveform", [
+      "Sine",
+      "Square",
+      "Sawtooth",
+      "Triangle",
+      "Noise",
+      "POPhase",
+      "PODigital",
+      "POVosim",
+    ]);
+    constants("kLFO", "pd_lfo_type", [
+      "Square",
+      "SawtoothUp",
+      "SawtoothDown",
+      "Triangle",
+      "Sine",
+      "SampleAndHold",
+    ]);
+    constants("kFilter", "pd_sound_filter", [
+      "LowPass",
+      "HighPass",
+      "BandPass",
+      "Notch",
+      "PEQ",
+      "LowShelf",
+      "HighShelf",
     ]);
   }
 

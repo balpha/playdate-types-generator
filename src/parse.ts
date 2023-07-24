@@ -19,16 +19,20 @@ export function isSuccessful(r: ParseResult): r is SuccessfulParseResult {
   return r.success;
 }
 
+const functionRegex = /^(?:([\w.]+)([.:]))(\w+)\(([^)]*)\)$/;
+const variableRegex = /^(?:([\w.]+)(\.))(\w+)()$/;
+
 export function parse(
   s: string,
   isCallback: boolean,
-  isMethod: boolean
+  isMethod: boolean,
+  isVariable: boolean
 ): ParseResult {
   if (isCallback && !/\(/.test(s)) {
     // a couple of the callbacks don't have the parens in the documentation
     s += "()";
   }
-  const match = s.trim().match(/^(?:([\w.]+)([.:]))?(\w+)\(([^)]*)\)$/);
+  const match = s.trim().match(isVariable ? variableRegex : functionRegex);
   if (!match) {
     console.log("!!!", s);
     return { success: false };
