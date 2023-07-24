@@ -75,7 +75,6 @@ export function writePrefix(
   ].forEach((l) => result.push(l));
 
   [
-    "pd_UNKNOWN",
     "pd_UNDOCUMENTED",
     "pd_button",
     "pd_text_alignment",
