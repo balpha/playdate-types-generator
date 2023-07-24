@@ -2,108 +2,56 @@ import { writeConstantFields } from "./constants";
 import { HARDCODED_TYPES } from "./hardcoded_types";
 import { inferParameterType } from "./infer_parameter_type";
 import { inferReturnType } from "./infer_return_type";
+import { SuccessfulParseResult, isSuccessful, parse } from "./parse";
 import { writePrefix } from "./prefix";
-
-function parse(s: string, isCallback: boolean, isMethod: boolean) {
-  if (isCallback && !/\(/.test(s)) {
-    s += "()";
-  }
-  const m = s.trim().match(/^(?:([\w.]+)([.:]))?(\w+)\(([^)]*)\)$/);
-  if (!m) {
-    console.log("!!!", s);
-    return null;
-  }
-  let [full, table, dotOrColon, name, parameters] = m;
-
-  if (parameters === "{ row1, row2, row3, row4, row5, row6, row7, row8 }") {
-    parameters = "eightRows";
-  }
-  parameters = parameters.replace(/\.\.\..*/, "...");
-
-  const bi = parameters.indexOf("[");
-
-  const optOrNot =
-    bi >= 0
-      ? [
-          parameters.substring(0, bi),
-          parameters.substring(bi).replace(/[[\]]+/g, " "),
-        ]
-      : [parameters, ""];
-
-  function singleParams(s: string) {
-    return s
-      .split(",")
-      .map((p) => p.trim())
-      .filter((_) => _);
-  }
-
-  const params = [
-    ...singleParams(optOrNot[0]).map((p) => ({
-      name: p,
-      optional: false,
-    })),
-    ...singleParams(optOrNot[1]).map((p) => ({
-      name: p,
-      optional: p !== "...",
-    })),
-  ];
-
-  return { table, dotOrColon, name, parameters, params, isMethod };
-}
 
 interface PdFunction {
   titleText: string;
   documentation: string;
   isCallback: boolean;
   isMethod: boolean;
-  parseResults: ParseResult[];
+  parseResults: SuccessfulParseResult[];
 }
 
-interface ParseResult {
-  table: string;
-  dotOrColon: string;
-  name: string;
-  parameters: string;
-  params: {
-    name: string;
-    optional: boolean;
-  }[];
-  isMethod: boolean;
-}
+const funs = [] as PdFunction[];
+const elements = document.querySelectorAll<HTMLElement>(
+  ".function, .method, .callback"
+);
+for (let element of elements) {
+  const titleText = element
+    .querySelector<HTMLElement>(":scope > .title")
+    ?.innerText?.trim();
 
-const funs: PdFunction[] = [
-  ...document.querySelectorAll<HTMLElement>(".function, .method, .callback"),
-]
-  .map((element) => ({
-    titleText:
-      element
-        .querySelector<HTMLElement>(":scope > .title")
-        ?.innerText?.trim() ?? "",
-    documentation:
-      element
-        .querySelector<HTMLElement>(".content, :scope > p")
-        ?.innerText?.trim() ?? "",
-    isCallback: element.classList.contains("callback"),
-    isMethod: element.classList.contains("method"),
-  }))
-  .filter((item) => item.titleText)
-  .map((item) => ({
-    ...item,
-    isMethod:
-      (item.isMethod ||
-        (item.isCallback && /\s*[\w.]+:/.test(item.titleText))) &&
-      item.titleText !== "playdate.keyboard.hide()",
-  }))
-  .map((item) => ({
-    ...item,
-    parseResults: item.titleText
-      .split("\n")
-      .map((overloadLine) =>
-        parse(overloadLine, item.isCallback, item.isMethod)
-      )
-      .filter((_) => _) as ParseResult[],
-  }))
-  .filter((_) => _.parseResults.length);
+  if (!titleText) {
+    continue;
+  }
+
+  const documentation =
+    element
+      .querySelector<HTMLElement>(".content, :scope > p")
+      ?.innerText?.trim() ?? "";
+
+  const isCallback = element.classList.contains("callback");
+  const isMethod =
+    (element.classList.contains("method") ||
+      (isCallback && /\s*[\w.]+:/.test(titleText))) &&
+    titleText !== "playdate.keyboard.hide()";
+
+  const parseResults = titleText
+    .split("\n")
+    .map((overloadLine) => parse(overloadLine, isCallback, isMethod))
+    .filter(isSuccessful);
+
+  if (parseResults.length) {
+    funs.push({
+      titleText,
+      documentation,
+      isCallback,
+      isMethod,
+      parseResults,
+    });
+  }
+}
 
 interface TreeFunction {
   name: string;
