@@ -14,11 +14,27 @@ interface PdFunction {
   parseResults: SuccessfulParseResult[];
 }
 
+function codeElements() {
+  return [...document.querySelectorAll<HTMLElement>("em")].filter(
+    (e) => e.childElementCount === 0
+  );
+}
+
+function wrapCodeInBackticks() {
+  codeElements().forEach((e) => (e.innerText = `\`${e.innerText}\``));
+}
+function removeBackticksAroundCode() {
+  codeElements().forEach(
+    (e) => (e.innerText = e.innerText.replace(/^`|`$/g, ""))
+  );
+}
+
 export function generateAnnotation() {
   const funs = [] as PdFunction[];
   const elements = document.querySelectorAll<HTMLElement>(
     ".function, .method, .callback, .variable"
   );
+  wrapCodeInBackticks();
   for (let element of elements) {
     const titleText = element
       .querySelector<HTMLElement>(":scope > .title")
@@ -100,6 +116,8 @@ export function generateAnnotation() {
       funs.push(otherFun);
     }
   }
+
+  removeBackticksAroundCode();
 
   ["x", "y", "id"].forEach((n) => {
     const line = "playdate.pathfinder.node." + n;

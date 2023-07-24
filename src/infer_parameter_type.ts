@@ -114,7 +114,7 @@ export function inferParameterType(
     inferredType = "pd_rect";
   } else if (
     parameterName === "point" ||
-    (parameterName === "p" && /point p/i.test(documentation))
+    (parameterName === "p" && /point `?p/i.test(documentation))
   ) {
     inferredType = "pd_point";
   } else if (parameterName === "v" && parentType === "pd_vector2D") {
@@ -138,7 +138,7 @@ export function inferParameterType(
     inferredType = "number";
   }
   if (
-    new RegExp("if " + parameterName + " is (true|false)", "i").test(
+    new RegExp("if `?" + parameterName + "`? is `?(true|false)`?", "i").test(
       documentation
     )
   ) {
