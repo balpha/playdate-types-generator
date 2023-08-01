@@ -126,5 +126,32 @@ export function collectDataFromDom(): PdFunction[] {
       parseResults: [parse(line, false, true, true) as SuccessfulParseResult],
     });
   });
+
+  const rectCanBeValues = funs.filter(
+    (f) =>
+      f.titleText === "playdate.graphics.tilemap:draw(x, y, [sourceRect])" ||
+      f.titleText.startsWith(
+        "playdate.graphics.image:draw(x, y, [flip, [sourceRect]])"
+      )
+  );
+  rectCanBeValues.forEach((fn) => {
+    const additions = fn.parseResults.map(
+      (pr) =>
+        parse(
+          (
+            pr.table +
+            pr.dotOrColon +
+            pr.name +
+            "(" +
+            pr.parameters +
+            ")"
+          ).replace("sourceRect", "rx, ry, rw, rh"),
+          fn.isCallback,
+          fn.isMethod,
+          fn.isVariable
+        ) as SuccessfulParseResult
+    );
+    fn.parseResults.push(...additions);
+  });
   return funs;
 }

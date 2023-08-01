@@ -41,7 +41,7 @@ export function inferParameterType(
       "top",
       "bottom",
     ].includes(parameterName) ||
-    /^([sd][xy]|[xywh]\d|row\d|.*Count|(min|max)|\w+(Width|Height|Angle|X|Y|Value))$/.test(
+    /^(r[xywh]|[sd][xy]|[xywh]\d|row\d|.*Count|(min|max)|\w+(Width|Height|Angle|X|Y|Value))$/.test(
       parameterName
     )
   ) {
