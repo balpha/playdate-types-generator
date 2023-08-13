@@ -1356,4 +1356,25 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.sound.sequence:play": {
       finishCallback: "fun(pd_sequence)",
     },
+    "playdate.geometry.arc.clockwise": {
+      __value: "boolean",
+    },
+    "playdate.geometry.rect.origin": {
+      __value: "READONLY_pd_point",
+    },
+    "playdate.geometry.rect.size": {
+      __value: "READONLY_pd_size",
+    },
+    "playdate.geometry.rect.top": {
+      __value: "READONLY_number",
+    },
+    "playdate.geometry.rect.bottom": {
+      __value: "READONLY_number",
+    },
+    "playdate.geometry.rect.right": {
+      __value: "READONLY_number",
+    },
+    "playdate.geometry.rect.left": {
+      __value: "READONLY_number",
+    },
   };

@@ -114,18 +114,71 @@ export function collectDataFromDom(): PdFunction[] {
 
   removeBackticksAroundCode();
 
-  ["x", "y", "id"].forEach((n) => {
-    const line = "playdate.pathfinder.node." + n;
-    funs.push({
-      titleText: line,
-      documentation:
-        "You can directly read or write x, y and id values on a playdate.pathfinder.node.",
-      isCallback: false,
-      isMethod: true,
-      isVariable: true,
-      parseResults: [parse(line, false, true, true) as SuccessfulParseResult],
+  function additionalInstanceProperties(
+    type: string,
+    props: string[],
+    doc: string
+  ) {
+    props.forEach((n) => {
+      const line = type + "." + n;
+      funs.push({
+        titleText: line,
+        documentation: doc,
+        isCallback: false,
+        isMethod: true,
+        isVariable: true,
+        parseResults: [parse(line, false, true, true) as SuccessfulParseResult],
+      });
     });
-  });
+  }
+
+  additionalInstanceProperties(
+    "playdate.pathfinder.node",
+    ["x", "y", "id"],
+    "You can directly read or write `x`, `y` and `id` values on a `playdate.pathfinder.node`."
+  );
+
+  additionalInstanceProperties(
+    "playdate.geometry.point",
+    ["x", "y"],
+    "You can directly read or write the `x` and `y` values of a point."
+  );
+
+  additionalInstanceProperties(
+    "playdate.geometry.arc",
+    ["x", "y", "radius", "startAngle", "endAngle", "clockwise"],
+    "You can directly read or write the `x`, `y`, `radius`, `startAngle`, `endAngle` and `clockwise` values of an arc."
+  );
+
+  additionalInstanceProperties(
+    "playdate.geometry.lineSegment",
+    ["x1", "y1", "x2", "y2"],
+    "You can directly read or write `x1`, `y1`, `x2`, or `y2` values to a lineSegment."
+  );
+
+  additionalInstanceProperties(
+    "playdate.geometry.rect",
+    ["x", "y", "width", "height"],
+    "You can directly read or write `x`, `y`, `width`, or `height` values to a rect."
+  );
+
+  additionalInstanceProperties(
+    "playdate.geometry.rect",
+    ["top", "bottom", "right", "left", "origin", "size"],
+    "**READ-ONLY**. While you can directly read or write `x`, `y`, `width`, or `height` values to a rect, the values of `top`, `bottom`, `right`, `left`, `origin`, and `size` are read-only."
+  );
+
+  additionalInstanceProperties(
+    "playdate.geometry.size",
+    ["width", "height"],
+    "You can directly read or write  the `width` and `height` values of a `size`."
+  );
+
+  additionalInstanceProperties(
+    "playdate.geometry.vector2D",
+    ["dx", "dy"],
+    "You can directly read or write `dx`, or `dy` values to a vector2D."
+  );
 
   const rectCanBeValues = funs.filter(
     (f) =>
