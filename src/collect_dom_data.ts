@@ -50,13 +50,17 @@ export function collectDataFromDom(): PdFunction[] {
 
     const isCallback = element.classList.contains("callback");
     const isVariable = element.classList.contains("variable");
-    const isMethod =
+    let isMethod =
       (element.classList.contains("method") ||
         /\s*[\w.]+:/.test(titleText) ||
         ((isVariable || isCallback) &&
           /^playdate\.(frame)?timer\./i.test(titleText)) ||
         titleText.startsWith("playdate.crankIndicator")) &&
       !["playdate.keyboard.hide()"].includes(titleText);
+
+    if (titleText === "playdate.sound.instrument.new([synth])") {
+      isMethod = false;
+    }
 
     const parseResults = titleText
       .split("\n")
