@@ -322,12 +322,14 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.timer.keyRepeatTimer": {
       __return: "pd_timer",
       callback: "fun(...)",
+      "...": "any",
     },
     "playdate.timer.keyRepeatTimerWithDelay": {
       delayAfterInitialFiring: "number",
       delayAfterSecondFiring: "number",
       __return: "pd_timer",
       callback: "fun(...)",
+      "...": "any",
     },
     "playdate.timer.allTimers": {
       __return: "pd_timer[]",
@@ -438,6 +440,10 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.geometry.polygon.new": {
       p1: "pd_point",
       p2: "pd_point",
+      p3: "pd_point",
+      p4: "pd_point",
+      p5: "pd_point",
+      p6: "pd_point",
       numberOfVertices: "number",
     },
     "playdate.geometry.polygon:copy": {
@@ -1337,15 +1343,19 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.timer.new": {
       callback: "fun(...)",
+      "...": "any",
     },
     "playdate.timer.performAfterDelay": {
       callback: "fun(...)",
+      "...": "any",
     },
     "playdate.frameTimer.new": {
       callback: "fun(...)",
+      "...": "any",
     },
     "playdate.frameTimer.performAfterDelay": {
       callback: "fun(...)",
+      "...": "any",
     },
     "playdate.menu.item:setCallback": {
       callback: "fun()",

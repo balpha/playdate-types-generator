@@ -30,7 +30,9 @@ export function generateAnnotation() {
         if (step.isCallback) {
           isCallback = true;
         }
-        params.forEach((pDef) => {
+
+        let previousType: string | null = null;
+        params.forEach((pDef, index) => {
           const pName = pDef.name;
 
           let pType: string | null;
@@ -43,15 +45,18 @@ export function generateAnnotation() {
           } else {
             pType = inferParameterType(pName, step.name, step.doc, parentType);
           }
+          if (pType === "{PREV}") {
+            pType = previousType;
+          }
 
           const question = pDef.optional ? "?" : "";
-          typedParams.push(
-            ["..."].includes(pName) ? pName : `${pName}${question}: ${pType}`
-          );
-          if (pType === "pd_UNKNOWN" && !["..."].includes(pName)) {
+          typedParams.push(`${pName}${question}: ${pType}`);
+          if (pType === "pd_UNKNOWN") {
             unknowns[step.fullname] ??= {};
             unknowns[step.fullname][pName] = "";
           }
+
+          previousType = pType;
         });
 
         const hardcodingKey: string = step.isVariable ? "__value" : "__return";

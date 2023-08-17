@@ -31,7 +31,7 @@ export function collectDataFromDom(): PdFunction[] {
   );
   wrapCodeInBackticks();
   for (let element of elements) {
-    const titleText = element
+    let titleText = element
       .querySelector<HTMLElement>(":scope > .title")
       ?.innerText?.trim()
       .replace(
@@ -42,6 +42,18 @@ export function collectDataFromDom(): PdFunction[] {
     if (!titleText) {
       continue;
     }
+
+    // Overload resolution in the lua language server is a bit wonky and lets a few
+    // obvious issues through. This change makes that less likely
+    titleText = titleText
+      .replace(
+        "playdate.geometry.polygon.new(p1, p2, ..., pn)",
+        "playdate.geometry.polygon.new(p1, p2, [p3, p4, p5, p6,] ...)"
+      )
+      .replace(
+        "playdate.geometry.polygon.new(x1, y1, x2, y2, ..., xn, yn)",
+        "playdate.geometry.polygon.new(x1, y1, x2, y2, [x3, y3,] ...)"
+      );
 
     let documentation =
       element

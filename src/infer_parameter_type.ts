@@ -4,6 +4,9 @@ export function inferParameterType(
   documentation: string,
   parentType: string
 ) {
+  if (parameterName === "...") {
+    return "{PREV}";
+  }
   let inferredType = "pd_UNKNOWN";
   if (
     parentType === "pd_easingFunctions_lib" &&
