@@ -41,7 +41,7 @@ export function collectDataFromDom(): PdFunction[] {
   sroic?.classList.add("method");
 
   const elements = document.querySelectorAll<HTMLElement>(
-    ".function, .method, .callback, .variable"
+    ".function, .method, .callback, .variable, .property"
   );
   wrapCodeInBackticks();
 
@@ -78,6 +78,7 @@ export function collectDataFromDom(): PdFunction[] {
     const isCallback = element.classList.contains("callback");
     const isVariable =
       element.classList.contains("variable") ||
+      element.classList.contains("property") ||
       titleText === "playdate.metadata";
 
     let isMethod =
@@ -245,5 +246,6 @@ export function collectDataFromDom(): PdFunction[] {
       );
     fn.parseResults.push(...additions);
   });
+
   return funs;
 }

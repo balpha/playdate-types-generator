@@ -43,6 +43,7 @@ export function writePrefix(
     "---@alias pd_effect " + effect_types,
     "",
     "-- not completely foolproof, but this hack should catch some accidental assignments to read-only properties",
+    "",
     "---@class READONLY_number : number",
     "---@class READONLY_boolean : boolean",
     "---@class READONLY_pd_size : pd_size",

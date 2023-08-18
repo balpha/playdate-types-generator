@@ -789,6 +789,18 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       other: "pd_sprite",
       __return: "pd_collision_type",
     },
+    "playdate.graphics.sprite.x": {
+      __value: "READONLY_number",
+    },
+    "playdate.graphics.sprite.y": {
+      __value: "READONLY_number",
+    },
+    "playdate.graphics.sprite.width": {
+      __value: "READONLY_number",
+    },
+    "playdate.graphics.sprite.height": {
+      __value: "READONLY_number",
+    },
     "playdate.graphics.font.newFamily": {
       fontPaths: "pd_font_family_paths",
       __return: "pd_font_family",
