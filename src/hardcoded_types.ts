@@ -51,6 +51,12 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.ui.gridview.easingPeriod": {
       __value: "number",
     },
+    "playdate.ui.gridview.needsDisplay": {
+      __value: "READONLY_boolean",
+    },
+    "playdate.ui.gridview.isScrolling": {
+      __value: "READONLY_boolean",
+    },
     "playdate.getSystemMenu": {
       __return: "pd_menu",
     },
@@ -1348,6 +1354,12 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.timer.performAfterDelay": {
       callback: "fun(...)",
       "...": "any",
+    },
+    "playdate.timer.currentTime": {
+      __value: "READONLY_number",
+    },
+    "playdate.timer.timeLeft": {
+      __value: "READONLY_number",
     },
     "playdate.frameTimer.new": {
       callback: "fun(...)",
