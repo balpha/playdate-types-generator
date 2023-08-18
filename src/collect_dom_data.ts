@@ -33,10 +33,18 @@ function removeBackticksAroundCode() {
 
 export function collectDataFromDom(): PdFunction[] {
   const funs = [] as PdFunction[];
+
+  const sroic = document.getElementById(
+    "m-graphics.sprite.setRedrawsOnImageChange"
+  );
+  const sroicClass = sroic?.className;
+  sroic?.classList.add("method");
+
   const elements = document.querySelectorAll<HTMLElement>(
     ".function, .method, .callback, .variable"
   );
   wrapCodeInBackticks();
+
   for (let element of elements) {
     let titleText = element
       .querySelector<HTMLElement>(":scope > .title")
@@ -138,6 +146,9 @@ export function collectDataFromDom(): PdFunction[] {
     }
   }
 
+  if (sroic && sroicClass) {
+    sroic.className = sroicClass;
+  }
   removeBackticksAroundCode();
 
   function additionalInstanceProperties(
