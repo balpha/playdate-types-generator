@@ -11,9 +11,11 @@ import { writeConstantFields } from "./constants";
 import { HARDCODED_TYPES } from "./hardcoded_types";
 import { inferParameterType } from "./infer_parameter_type";
 import { inferReturnType } from "./infer_return_type";
+import { collectMetadataFromDom } from "./metadata";
 import { writePrefix } from "./prefix";
 
 export function generateAnnotation() {
+  const metadata = collectMetadataFromDom();
   const funs = collectDataFromDom();
   const tree = buildTree(funs);
 
@@ -146,6 +148,12 @@ export function generateAnnotation() {
         ] as TreeFunctionOrVariable
       ).doc
   );
+
+  result.push("", "---@class pd_metadata");
+  metadata.forEach(({ name, type, doc }) => {
+    result.push(...doc.split("\n").map((l) => "--- " + l));
+    result.push(`---@field ${name} ${type}`);
+  });
 
   function isInstanceField(
     f: TreeClass | TreeFunctionOrVariable | TreeOperator,

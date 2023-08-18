@@ -1399,4 +1399,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.geometry.rect.left": {
       __value: "READONLY_number",
     },
+    "playdate.metadata": {
+      __value: "pd_metadata",
+    },
   };

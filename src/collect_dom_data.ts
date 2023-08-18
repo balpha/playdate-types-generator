@@ -68,7 +68,10 @@ export function collectDataFromDom(): PdFunction[] {
         ?.innerText?.trim() ?? "";
 
     const isCallback = element.classList.contains("callback");
-    const isVariable = element.classList.contains("variable");
+    const isVariable =
+      element.classList.contains("variable") ||
+      titleText === "playdate.metadata";
+
     let isMethod =
       (element.classList.contains("method") ||
         /\s*[\w.]+:/.test(titleText) ||
