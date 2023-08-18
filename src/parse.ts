@@ -1,4 +1,7 @@
+import { KNOWN_OPERATORS } from "./operators";
+
 export interface SuccessfulParseResult {
+  isOperator?: false;
   success: true;
   table: string;
   dotOrColon: string;
@@ -10,13 +13,35 @@ export interface SuccessfulParseResult {
   }[];
   isMethod: boolean;
 }
+export interface OperatorParseResult {
+  success: true;
+  isOperator: true;
+  name: string;
+  dotOrColon: "#";
+  table: string;
+  parameterTypes: string[];
+  returnType: string;
+}
 export interface UnsuccessfulParseResult {
   success: false;
 }
-export type ParseResult = SuccessfulParseResult | UnsuccessfulParseResult;
+export type ParseResult =
+  | SuccessfulParseResult
+  | UnsuccessfulParseResult
+  | OperatorParseResult;
 
-export function isSuccessful(r: ParseResult): r is SuccessfulParseResult {
+export function isSuccessful(
+  r: ParseResult
+): r is SuccessfulParseResult | OperatorParseResult {
   return r.success;
+}
+export function isOperator(r: ParseResult): r is OperatorParseResult {
+  return r.success && !!r.isOperator;
+}
+export function isSuccessfulNonOperator(
+  r: ParseResult
+): r is SuccessfulParseResult {
+  return r.success && !r.isOperator;
 }
 
 const functionRegex = /^(?:([\w.]+)([.:]))(\w+)\(([^)]*)\)$/;
@@ -32,8 +57,28 @@ export function parse(
     // a couple of the callbacks don't have the parens in the documentation
     s += "()";
   }
-  const match = s.trim().match(isVariable ? variableRegex : functionRegex);
+  s = s.trim();
+  const match = s.match(isVariable ? variableRegex : functionRegex);
   if (!match) {
+    if (
+      [
+        "playdate.graphics.imagetable[n]",
+        "#playdate.graphics.imagetable",
+      ].includes(s)
+    ) {
+      // fine; imagetable inherits from array
+      return { success: false };
+    }
+
+    const op = KNOWN_OPERATORS[s];
+    if (op) {
+      return {
+        ...op,
+        success: true,
+        isOperator: true,
+        dotOrColon: "#",
+      };
+    }
     console.log("!!!", s);
     return { success: false };
   }

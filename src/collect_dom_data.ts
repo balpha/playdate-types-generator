@@ -1,4 +1,11 @@
-import { SuccessfulParseResult, isSuccessful, parse } from "./parse";
+import {
+  OperatorParseResult,
+  SuccessfulParseResult,
+  isOperator,
+  isSuccessful,
+  isSuccessfulNonOperator,
+  parse,
+} from "./parse";
 
 export interface PdFunction {
   titleText: string;
@@ -6,7 +13,7 @@ export interface PdFunction {
   isCallback: boolean;
   isMethod: boolean;
   isVariable: boolean;
-  parseResults: SuccessfulParseResult[];
+  parseResults: (SuccessfulParseResult | OperatorParseResult)[];
 }
 
 function codeElements() {
@@ -204,22 +211,24 @@ export function collectDataFromDom(): PdFunction[] {
       )
   );
   rectCanBeValues.forEach((fn) => {
-    const additions = fn.parseResults.map(
-      (pr) =>
-        parse(
-          (
-            pr.table +
-            pr.dotOrColon +
-            pr.name +
-            "(" +
-            pr.parameters +
-            ")"
-          ).replace("sourceRect", "rx, ry, rw, rh"),
-          fn.isCallback,
-          fn.isMethod,
-          fn.isVariable
-        ) as SuccessfulParseResult
-    );
+    const additions = fn.parseResults
+      .filter(isSuccessfulNonOperator)
+      .map(
+        (pr) =>
+          parse(
+            (
+              pr.table +
+              pr.dotOrColon +
+              pr.name +
+              "(" +
+              pr.parameters +
+              ")"
+            ).replace("sourceRect", "rx, ry, rw, rh"),
+            fn.isCallback,
+            fn.isMethod,
+            fn.isVariable
+          ) as SuccessfulParseResult
+      );
     fn.parseResults.push(...additions);
   });
   return funs;

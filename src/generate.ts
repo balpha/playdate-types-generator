@@ -1,8 +1,10 @@
 import {
   TreeClass,
   TreeFunctionOrVariable,
+  TreeOperator,
   buildTree,
   isFunctionOrVariable,
+  isTreeOperator,
 } from "./build_tree";
 import { collectDataFromDom } from "./collect_dom_data";
 import { writeConstantFields } from "./constants";
@@ -18,7 +20,21 @@ export function generateAnnotation() {
   var result = [] as string[];
   var tbd = [...Object.values(tree)] as TreeClass[];
   var unknowns = JSON.parse(JSON.stringify(HARDCODED_TYPES));
-  function add(step: TreeClass | TreeFunctionOrVariable, parentType: string) {
+  function add(
+    step: TreeClass | TreeFunctionOrVariable | TreeOperator,
+    parentType: string
+  ) {
+    if (isTreeOperator(step)) {
+      if (step.doc) {
+        result.push(...step.doc.split("\n").map((l) => "--- " + l));
+      }
+      const params = step.parameterTypes.length
+        ? `(${step.parameterTypes.join(", ")})`
+        : "";
+
+      result.push(`---@operator ${step.name}${params}: ${step.returnType}`);
+      return;
+    }
     if (isFunctionOrVariable(step)) {
       const overloads = [];
       let isCallback = false;
@@ -132,9 +148,12 @@ export function generateAnnotation() {
   );
 
   function isInstanceField(
-    f: TreeClass | TreeFunctionOrVariable,
+    f: TreeClass | TreeFunctionOrVariable | TreeOperator,
     parentType: string
   ) {
+    if (isTreeOperator(f)) {
+      return true;
+    }
     if (!isFunctionOrVariable(f)) {
       return false;
     }
@@ -178,6 +197,8 @@ export function generateAnnotation() {
     if (instanceFields.length) {
       const ext = ["pd_lfo", "pd_envelope", "pd_controlsignal"].includes(type)
         ? " : pd_signal"
+        : type === "pd_imagetable"
+        ? " : {[integer]: pd_image}"
         : "";
       result.push("");
       result.push(

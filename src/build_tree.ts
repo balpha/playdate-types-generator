@@ -1,4 +1,5 @@
 import { PdFunction } from "./collect_dom_data";
+import { isOperator } from "./parse";
 
 export interface TreeFunctionOrVariable {
   name: string;
@@ -19,14 +20,27 @@ export interface TreeClass {
   fields: Tree;
 }
 
+export interface TreeOperator {
+  name: string;
+  doc: string;
+  parameterTypes: string[];
+  returnType: string;
+}
+
 export interface Tree {
-  [s: string]: TreeClass | TreeFunctionOrVariable;
+  [s: string]: TreeClass | TreeFunctionOrVariable | TreeOperator;
 }
 
 export function isFunctionOrVariable(
-  t: TreeClass | TreeFunctionOrVariable
+  t: TreeClass | TreeFunctionOrVariable | TreeOperator
 ): t is TreeFunctionOrVariable {
   return "parameterSets" in t;
+}
+
+export function isTreeOperator(
+  t: TreeClass | TreeFunctionOrVariable | TreeOperator
+): t is TreeOperator {
+  return "parameterTypes" in t;
 }
 
 export function buildTree(funs: PdFunction[]) {
@@ -63,6 +77,16 @@ export function buildTree(funs: PdFunction[]) {
         isCallback +
         "|" +
         (isVariable ? "*" : overload.dotOrColon);
+      if (isOperator(overload)) {
+        // these only exist once -- no actual overloads
+        step[stepKey + "|" + overload.parameterTypes.join("/")] = {
+          name: overload.name,
+          doc: documentation,
+          parameterTypes: overload.parameterTypes,
+          returnType: overload.returnType,
+        };
+        continue;
+      }
       let existing = step[stepKey] as TreeFunctionOrVariable | undefined;
       if (!existing) {
         existing = step[stepKey] = {
