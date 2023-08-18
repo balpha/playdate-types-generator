@@ -189,19 +189,27 @@ export function generateAnnotation() {
       (f) => !isInstanceField(f, type)
     );
 
+    const instanceFields = Object.values(step.fields).filter((f) =>
+      isInstanceField(f, type)
+    );
+
     if (type !== "pd_crankIndicator") {
+      let ext = "";
+      if (instanceFields.length) {
+        // pd_x_lib inherits from pd_x so you can e.g. do `draw = gfx.image.draw`
+        ext = " : " + type;
+      }
       result.push("");
       result.push(
-        `---@class ${step.fullname === "table" ? "tablelib" : type + "_lib"}`
+        `---@class ${
+          step.fullname === "table" ? "tablelib" : type + "_lib"
+        }${ext}`
       );
       statics.forEach((s) => add(s, type + "_lib"));
 
       writeConstantFields(result, step.name);
     }
 
-    const instanceFields = Object.values(step.fields).filter((f) =>
-      isInstanceField(f, type)
-    );
     if (instanceFields.length) {
       const ext = ["pd_lfo", "pd_envelope", "pd_controlsignal"].includes(type)
         ? " : pd_signal"
