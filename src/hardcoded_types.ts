@@ -1207,7 +1207,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       __return: "integer",
     },
     "playdate.sound.track:setInstrument": {
-      inst: "pd_instrument",
+      inst: "pd_instrument|pd_synth",
     },
     "playdate.sound.track:getInstrument": {
       __return: "pd_instrument",
