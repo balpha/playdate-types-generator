@@ -7,4 +7,4 @@ made to work on my machine (which is a linux box).
 the browswer console on https://sdk.play.date/.
 
 That, in turn, copies the generate Lua annotations into the clipboard, which I
-then past into `__types.lus`.
+then paste into `__types.lus`.
