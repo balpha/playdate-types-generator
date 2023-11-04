@@ -1148,7 +1148,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       level: "number",
     },
     "playdate.sound.sequence.new": {
-      "path.mid": "string",
+      midi_path: "string",
     },
     "playdate.sound.sequence:goToStep": {
       step: "integer",
@@ -1413,5 +1413,21 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.metadata": {
       __value: "pd_metadata",
+    },
+    "playdate.sound.synth:setWavetable": {
+      sample: "pd_sample",
+      samplesize: "integer",
+      xsize: "integer",
+      ysize: "integer",
+    },
+    "playdate.sound.lfo:setStartPhase": {
+      phase: "number",
+    },
+    "playdate.ui.crankIndicator:draw": {
+      xOffset: "number",
+      yOffset: "number",
+    },
+    "playdate.ui.crankIndicator:getBounds": {
+      __return: "(number, number, number, number)",
     },
   };
