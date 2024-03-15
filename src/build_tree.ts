@@ -101,7 +101,7 @@ export function buildTree(funs: PdFunction[]) {
           dotOrColon: overload.dotOrColon,
         };
       } else {
-        if (!existing.docs.includes(documentation)) {
+        if (!existing.docs.map(clean).includes(clean(documentation))) {
           existing.docs.push(documentation);
           existing.doc = existing.docs
             .map((s, i) => `### Overload ${i + 1} ###\n` + s)
@@ -113,3 +113,5 @@ export function buildTree(funs: PdFunction[]) {
   }
   return tree;
 }
+
+const clean = (s: string) => s.replace(/\s+Equivalent to.*in the C API\.$/, "");

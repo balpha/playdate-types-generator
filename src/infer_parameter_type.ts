@@ -83,7 +83,11 @@ export function inferParameterType(
   } else if (["alignment"].includes(parameterName)) {
     inferredType = "pd_text_alignment";
   } else if (["signal"].includes(parameterName)) {
-    inferredType = "pd_signal";
+    if (documentation.includes("Set to `nil` to clear the modulator.")) {
+      inferredType = "pd_signal?";
+    } else {
+      inferredType = "pd_signal";
+    }
   } else if (["track"].includes(parameterName)) {
     inferredType = "pd_track";
   } else if (["file"].includes(parameterName)) {

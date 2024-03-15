@@ -1321,6 +1321,8 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.ui.gridview:selectPreviousColumn": {
       wrapSelection: "boolean",
+      scrollToSelection: "boolean",
+      animate: "boolen",
     },
     "playdate.graphics.animation.loop.new": {
       shouldLoop: "boolean",
@@ -1429,5 +1431,32 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.ui.crankIndicator:getBounds": {
       __return: "(number, number, number, number)",
+    },
+    "playdate.setButtonQueueSize": {
+      size: "number",
+    },
+    "playdate.serialMessageReceived": {
+      message: "string",
+    },
+    "playdate.display.getInverted": {
+      __return: "boolean",
+    },
+    "playdate.graphics.drawLine": {
+      ls: "pd_lineSegment",
+    },
+    "playdate.graphics.sprite.getAlwaysRedraw": {
+      __return: "boolean",
+    },
+    "playdate.graphics.sprite:collisionsEnabled": {
+      __return: "boolean",
+    },
+    "playdate.sound.micinput.startListening": {
+      source: "string",
+      __return: "(boolean,string?)",
+    },
+    "playdate.ui.gridview:selectPreviousRow": {
+      wrapSelection: "boolean",
+      scrollToSelection: "boolean",
+      animate: "boolean",
     },
   };
