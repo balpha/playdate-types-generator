@@ -98,6 +98,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.GMTTimeFromEpoch": {
       __return: "pd_time_table",
     },
+    "playdate.getStats": {
+      __return: "pd_stats_table",
+    },
     "table.create": {
       __return: "table",
     },

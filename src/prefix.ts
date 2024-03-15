@@ -93,6 +93,16 @@ export function writePrefix(
     "---@field length number",
     "---@field velocity number",
     "",
+    "---@class pd_stats_table",
+    "---@field kernel number",
+    "---@field serial number",
+    "---@field game number",
+    "---@field GC number",
+    "---@field wifi number",
+    "---@field audio number",
+    "---@field trace number",
+    "---@field idle number",
+    "",
   ].forEach((l) => result.push(l));
 
   [
