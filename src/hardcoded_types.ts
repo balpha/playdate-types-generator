@@ -1325,7 +1325,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.ui.gridview:selectPreviousColumn": {
       wrapSelection: "boolean",
       scrollToSelection: "boolean",
-      animate: "boolen",
+      animate: "boolean",
     },
     "playdate.graphics.animation.loop.new": {
       shouldLoop: "boolean",
