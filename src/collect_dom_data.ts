@@ -220,10 +220,11 @@ export function collectDataFromDom(): PdFunction[] {
 
   const rectCanBeValues = funs.filter(
     (f) =>
-      f.titleText === "playdate.graphics.tilemap:draw(x, y, [sourceRect])" ||
-      f.titleText.startsWith(
-        "playdate.graphics.image:draw(x, y, [flip, [sourceRect]])"
-      )
+      f.titleText.includes("sourceRect") &&
+      (f.documentation.includes(
+        "can be a playdate.geometry.rect or four integers"
+      ) ||
+        f.titleText.startsWith("playdate.graphics.tilemap:drawIgnoringOffset"))
   );
   rectCanBeValues.forEach((fn) => {
     const additions = fn.parseResults
