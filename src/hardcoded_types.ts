@@ -1,75 +1,15 @@
 export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
   {
-    "playdate.argv": {
-      __value: "string[]",
-    },
-    "playdate.timer.value": {
-      __value: "number",
-    },
-    "playdate.timer.easingAmplitude": {
-      __value: "number",
-    },
-    "playdate.timer.easingPeriod": {
-      __value: "number",
-    },
-    "playdate.timer.timerEndedArgs": {
-      __value: "any[]",
-    },
-    "playdate.frameTimer.value": {
-      __value: "number",
-    },
-    "playdate.frameTimer.easingAmplitude": {
-      __value: "number",
-    },
-    "playdate.frameTimer.easingPeriod": {
-      __value: "number",
-    },
-    "playdate.frameTimer.frame": {
-      __value: "number",
-    },
-    "playdate.frameTimer.timerEndedArgs": {
-      __value: "any[]",
-    },
-    "playdate.graphics.animator.easingAmplitude": {
-      __value: "number",
-    },
-    "playdate.graphics.animator.easingPeriod": {
-      __value: "number",
-    },
-    "playdate.graphics.animator.reverses": {
-      __value: "boolean",
-    },
-    "playdate.sound.controlsignal.events": {
-      __value: "pd_event[]",
-    },
-    "playdate.ui.crankIndicator.clockwise": {
-      __value: "boolean",
-    },
-    "playdate.ui.gridview.easingAmplitude": {
-      __value: "number",
-    },
-    "playdate.ui.gridview.easingPeriod": {
-      __value: "number",
-    },
-    "playdate.ui.gridview.needsDisplay": {
-      __value: "READONLY_boolean",
-    },
-    "playdate.ui.gridview.isScrolling": {
-      __value: "READONLY_boolean",
-    },
-    "playdate.getSystemMenu": {
-      __return: "pd_menu",
-    },
-    "playdate.graphics.lockFocus": {
-      __return: null,
-    },
     "table.indexOfElement": {
-      __return: "number?",
       table: "table",
+      __return: "number?",
     },
     "table.getsize": {
-      __return: "(number, number)",
       table: "table",
+      __return: "(number, number)",
+    },
+    "table.create": {
+      __return: "table",
     },
     "table.shallowcopy": {
       source: "table",
@@ -79,6 +19,43 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "table.deepcopy": {
       source: "table",
       __return: "table",
+    },
+    "playdate.apiVersion": {
+      __return: "(number, number)",
+    },
+    "playdate.metadata": {
+      __value: "pd_metadata",
+    },
+    "playdate.getSystemMenu": {
+      __return: "pd_menu",
+    },
+    "playdate.setMenuImage": {
+      xOffset: "number",
+    },
+    "playdate.getSystemLanguage": {
+      __return: "pd_language",
+    },
+    "playdate.readAccelerometer": {
+      __return: "(number, number, number)",
+    },
+    "playdate.getButtonState": {
+      __return: "(integer, integer, integer)",
+    },
+    "playdate.setButtonQueueSize": {
+      size: "number",
+    },
+    "playdate.getCrankPosition": {
+      __return: "number",
+    },
+    "playdate.getCrankChange": {
+      __return: "(number, number)",
+    },
+    "playdate.getCrankTicks": {
+      ticksPerRevolution: "number",
+    },
+    "playdate.cranked": {
+      change: "number",
+      acceleratedChange: "number",
     },
     "playdate.getTime": {
       __return: "pd_time_table",
@@ -98,42 +75,14 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.GMTTimeFromEpoch": {
       __return: "pd_time_table",
     },
-    "playdate.getStats": {
-      __return: "pd_stats_table",
-    },
-    "table.create": {
-      __return: "table",
-    },
-    "playdate.apiVersion": {
-      __return: "(number, number)",
-    },
-    "playdate.setMenuImage": {
-      xOffset: "number",
-    },
-    "playdate.getSystemLanguage": {
-      __return: "pd_language",
-    },
-    "playdate.readAccelerometer": {
-      __return: "(number, number, number)",
-    },
-    "playdate.getButtonState": {
-      __return: "(integer, integer, integer)",
-    },
-    "playdate.getCrankPosition": {
-      __return: "number",
-    },
-    "playdate.getCrankChange": {
-      __return: "(number, number)",
-    },
-    "playdate.getCrankTicks": {
-      ticksPerRevolution: "number",
-    },
-    "playdate.cranked": {
-      change: "number",
-      acceleratedChange: "number",
+    "playdate.argv": {
+      __value: "string[]",
     },
     "playdate.getFPS": {
       __return: "number",
+    },
+    "playdate.getStats": {
+      __return: "pd_stats_table",
     },
     "playdate.getBatteryPercentage": {
       __return: "number",
@@ -153,27 +102,36 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.keyReleased": {
       key: "string",
     },
+    "playdate.serialMessageReceived": {
+      message: "string",
+    },
+    "json.encode": {
+      table: "table",
+    },
+    "json.encodePretty": {
+      table: "table",
+    },
+    "json.encodeToFile": {
+      table: "table",
+    },
+    "playdate.menu:addMenuItem": {
+      callback: "fun()",
+    },
     "playdate.menu:addCheckmarkMenuItem": {
-      __return: "pd_item",
       callback: "fun(boolean)",
+      __return: "pd_item",
     },
     "playdate.menu:addOptionsMenuItem": {
       options: "string[]",
       initalValue: "string",
-      __return: "pd_item",
       callback: "fun(string)",
+      __return: "pd_item",
     },
     "playdate.menu:getMenuItems": {
       __return: "pd_item[]",
     },
     "playdate.menu:removeMenuItem": {
       menuItem: "pd_item",
-    },
-    "playdate.menu.item:setValue": {
-      newValue: "integer|boolean|string",
-    },
-    "playdate.menu.item:getValue": {
-      __return: "integer|boolean|string",
     },
     "playdate.inputHandlers.push": {
       handler: "pd_input_handler",
@@ -182,11 +140,17 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.display.getScale": {
       __return: "number",
     },
+    "playdate.display.getInverted": {
+      __return: "boolean",
+    },
     "playdate.display.getMosaic": {
       __return: "(number, number)",
     },
     "playdate.display.getOffset": {
       __return: "(number, number)",
+    },
+    "playdate.datastore.write": {
+      table: "table",
     },
     "playdate.file.open": {
       mode: "pd_filemode",
@@ -221,6 +185,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.geometry.distanceToPoint": {
       __return: "number",
+    },
+    "playdate.graphics.drawLine": {
+      ls: "pd_lineSegment",
     },
     "playdate.graphics.setLineCapStyle": {
       style: "pd_line_cap_style",
@@ -282,6 +249,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.getStrokeLocation": {
       __return: "pd_stroke_location",
     },
+    "playdate.graphics.lockFocus": {
+      __return: null,
+    },
     "playdate.graphics.getDrawOffset": {
       __return: "(number, number)",
     },
@@ -328,29 +298,98 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.sound.playingSources": {
       __return: "pd_source[]",
     },
-    "playdate.timer.keyRepeatTimer": {
-      __return: "pd_timer",
+    "playdate.sound.getHeadphoneState": {
+      changeCallback: "nil | (fun(boolean, boolean))",
+      __return: "(boolean, boolean)",
+    },
+    "playdate.sound.setOutputsActive": {
+      headphones: "boolean",
+      speaker: "boolean",
+    },
+    "playdate.sound.getCurrentTime": {
+      __return: "number",
+    },
+    "playdate.timer.new": {
       callback: "fun(...)",
       "...": "any",
+    },
+    "playdate.timer.performAfterDelay": {
+      callback: "fun(...)",
+      "...": "any",
+    },
+    "playdate.timer.keyRepeatTimer": {
+      callback: "fun(...)",
+      "...": "any",
+      __return: "pd_timer",
     },
     "playdate.timer.keyRepeatTimerWithDelay": {
       delayAfterInitialFiring: "number",
       delayAfterSecondFiring: "number",
-      __return: "pd_timer",
       callback: "fun(...)",
       "...": "any",
+      __return: "pd_timer",
     },
     "playdate.timer.allTimers": {
       __return: "pd_timer[]",
     },
+    "playdate.timer.value": {
+      __value: "number",
+    },
+    "playdate.timer.easingAmplitude": {
+      __value: "number",
+    },
+    "playdate.timer.easingPeriod": {
+      __value: "number",
+    },
+    "playdate.timer.currentTime": {
+      __value: "READONLY_number",
+    },
+    "playdate.timer.timeLeft": {
+      __value: "READONLY_number",
+    },
+    "playdate.timer.timerEndedArgs": {
+      __value: "any[]",
+    },
+    "playdate.frameTimer.new": {
+      callback: "fun(...)",
+      "...": "any",
+    },
+    "playdate.frameTimer.performAfterDelay": {
+      callback: "fun(...)",
+      "...": "any",
+    },
     "playdate.frameTimer.allTimers": {
       __return: "pd_frameTimer[]",
+    },
+    "playdate.frameTimer.value": {
+      __value: "number",
+    },
+    "playdate.frameTimer.easingAmplitude": {
+      __value: "number",
+    },
+    "playdate.frameTimer.easingPeriod": {
+      __value: "number",
+    },
+    "playdate.frameTimer.frame": {
+      __value: "number",
+    },
+    "playdate.frameTimer.timerEndedArgs": {
+      __value: "any[]",
+    },
+    "playdate.menu.item:setCallback": {
+      callback: "fun()",
     },
     "playdate.menu.item:setTitle": {
       newTitle: "string",
     },
     "playdate.menu.item:getTitle": {
       __return: "string",
+    },
+    "playdate.menu.item:setValue": {
+      newValue: "integer|boolean|string",
+    },
+    "playdate.menu.item:getValue": {
+      __return: "integer|boolean|string",
     },
     "playdate.file.file:readline": {
       __return: "string",
@@ -372,17 +411,6 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       m22: "number",
       tx: "number",
       ty: "number",
-    },
-    "playdate.sound.getHeadphoneState": {
-      changeCallback: "nil | (fun(boolean, boolean))",
-      __return: "(boolean, boolean)",
-    },
-    "playdate.sound.setOutputsActive": {
-      headphones: "boolean",
-      speaker: "boolean",
-    },
-    "playdate.sound.getCurrentTime": {
-      __return: "number",
     },
     "playdate.geometry.affineTransform:concat": {
       af: "pd_affineTransform",
@@ -420,6 +448,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.geometry.arc:pointOnArc": {
       distance: "number",
+    },
+    "playdate.geometry.arc.clockwise": {
+      __value: "boolean",
     },
     "playdate.geometry.lineSegment:unpack": {
       __return: "(number, number, number, number)",
@@ -504,6 +535,24 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.geometry.rect:centerPoint": {
       __return: "pd_point",
     },
+    "playdate.geometry.rect.top": {
+      __value: "READONLY_number",
+    },
+    "playdate.geometry.rect.bottom": {
+      __value: "READONLY_number",
+    },
+    "playdate.geometry.rect.right": {
+      __value: "READONLY_number",
+    },
+    "playdate.geometry.rect.left": {
+      __value: "READONLY_number",
+    },
+    "playdate.geometry.rect.origin": {
+      __value: "READONLY_pd_point",
+    },
+    "playdate.geometry.rect.size": {
+      __value: "READONLY_pd_size",
+    },
     "playdate.geometry.size:unpack": {
       __return: "(number, number)",
     },
@@ -569,12 +618,6 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       xPhase: "number",
       yPhase: "number",
     },
-    "playdate.graphics.image:invertedImage": {
-      __return: "pd_image",
-    },
-    "playdate.graphics.image:blendWithImage": {
-      __return: "pd_image",
-    },
     "playdate.graphics.image:blurredImage": {
       numPasses: "number",
       padEdges: "boolean",
@@ -585,17 +628,17 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.image:fadedImage": {
       __return: "pd_image",
     },
+    "playdate.graphics.image:invertedImage": {
+      __return: "pd_image",
+    },
+    "playdate.graphics.image:blendWithImage": {
+      __return: "pd_image",
+    },
     "playdate.graphics.image:vcrPauseFilterImage": {
       __return: "pd_image",
     },
     "playdate.graphics.nineSlice.new": {
       imagePath: "string",
-    },
-    "playdate.sound.controlsignal:addEvent": {
-      step: "number",
-      value: "number",
-      interpolate: "boolean",
-      event: "pd_event",
     },
     "playdate.graphics.animator.new": {
       startTimeOffset: "number",
@@ -616,6 +659,15 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.animator:progress": {
       __return: "number",
     },
+    "playdate.graphics.animator.easingAmplitude": {
+      __value: "number",
+    },
+    "playdate.graphics.animator.easingPeriod": {
+      __value: "number",
+    },
+    "playdate.graphics.animator.reverses": {
+      __value: "boolean",
+    },
     "playdate.graphics.imagetable.new": {
       cellsWide: "number",
       cellSize: "number",
@@ -634,6 +686,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.graphics.imagetable:drawImage": {
       n: "integer",
+    },
+    "playdate.graphics.tilemap:setImageTable": {
+      table: "pd_imagetable",
     },
     "playdate.graphics.tilemap:setTiles": {
       data: "integer[]",
@@ -670,6 +725,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.sprite.clearClipRectsInRange": {
       startz: "number",
       endz: "number",
+    },
+    "playdate.graphics.sprite.getAlwaysRedraw": {
+      __return: "boolean",
     },
     "playdate.graphics.sprite.getAllSprites": {
       __return: "pd_sprite[]",
@@ -708,6 +766,12 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.sprite:getPosition": {
       __return: "(number, number)",
     },
+    "playdate.graphics.sprite.x": {
+      __value: "READONLY_number",
+    },
+    "playdate.graphics.sprite.y": {
+      __value: "READONLY_number",
+    },
     "playdate.graphics.sprite:setZIndex": {
       z: "number",
     },
@@ -716,6 +780,12 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.graphics.sprite:getCenter": {
       __return: "(number, number)",
+    },
+    "playdate.graphics.sprite.width": {
+      __value: "READONLY_number",
+    },
+    "playdate.graphics.sprite.height": {
+      __value: "READONLY_number",
     },
     "playdate.graphics.sprite:getScale": {
       __return: "(number, number)",
@@ -763,6 +833,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.sprite:overlappingSprites": {
       __return: "pd_sprite[]",
     },
+    "playdate.graphics.sprite:collisionsEnabled": {
+      __return: "boolean",
+    },
     "playdate.graphics.sprite:setGroups": {
       groups: "integer[]",
     },
@@ -791,18 +864,6 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.sprite:collisionResponse": {
       other: "pd_sprite",
       __return: "pd_collision_type",
-    },
-    "playdate.graphics.sprite.x": {
-      __value: "READONLY_number",
-    },
-    "playdate.graphics.sprite.y": {
-      __value: "READONLY_number",
-    },
-    "playdate.graphics.sprite.width": {
-      __value: "READONLY_number",
-    },
-    "playdate.graphics.sprite.height": {
-      __value: "READONLY_number",
     },
     "playdate.graphics.font.newFamily": {
       fontPaths: "pd_font_family_paths",
@@ -946,9 +1007,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       arg: "any",
     },
     "playdate.sound.fileplayer:setLoopRange": {
-      loopCallback: "fun(pd_fileplayer, any)",
       start: "number",
       end: "number",
+      loopCallback: "fun(pd_fileplayer, any)",
       arg: "any",
     },
     "playdate.sound.fileplayer:setLoopCallback": {
@@ -962,6 +1023,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.sound.fileplayer:getOffset": {
       __return: "number",
+    },
+    "playdate.sound.sample.new": {
+      format: "pd_sound_format",
     },
     "playdate.sound.sample:getSubsample": {
       startOffset: "number",
@@ -1014,15 +1078,21 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.sound.synth:setFinishCallback": {
       function: "fun()",
     },
+    "playdate.sound.synth:setWaveform": {
+      waveform: "pd_waveform|pd_sample",
+    },
+    "playdate.sound.synth:setWavetable": {
+      sample: "pd_sample",
+      samplesize: "integer",
+      xsize: "integer",
+      ysize: "integer",
+    },
     "playdate.sound.synth:setParameter": {
       parameter: "integer",
       value: "number",
     },
     "playdate.sound.synth:setParameterMod": {
       parameter: "number",
-    },
-    "playdate.sound.synth:setWaveform": {
-      waveform: "pd_waveform|pd_sample",
     },
     "playdate.sound.signal:setOffset": {
       offset: "number",
@@ -1043,6 +1113,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       depth: "number",
     },
     "playdate.sound.lfo:setPhase": {
+      phase: "number",
+    },
+    "playdate.sound.lfo:setStartPhase": {
       phase: "number",
     },
     "playdate.sound.lfo:setDelay": {
@@ -1153,6 +1226,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.sound.sequence.new": {
       midi_path: "string",
     },
+    "playdate.sound.sequence:play": {
+      finishCallback: "fun(pd_sequence)",
+    },
     "playdate.sound.sequence:goToStep": {
       step: "integer",
       play: "boolean",
@@ -1169,9 +1245,6 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.sound.sequence:setLoops": {
       startStep: "integer",
       endStep: "integer",
-    },
-    "playdate.sound.sample.new": {
-      format: "pd_sound_format",
     },
     "playdate.sound.sequence:addTrack": {
       __return: "pd_track?",
@@ -1247,6 +1320,15 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       note: "string|number",
       when: "number",
     },
+    "playdate.sound.controlsignal.events": {
+      __value: "pd_event[]",
+    },
+    "playdate.sound.controlsignal:addEvent": {
+      step: "number",
+      value: "number",
+      interpolate: "boolean",
+      event: "pd_event",
+    },
     "playdate.sound.controlsignal:setControllerType": {
       number: "number",
     },
@@ -1257,11 +1339,25 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       buffer: "pd_sample",
       completionCallback: "fun(pd_sample)",
     },
+    "playdate.sound.micinput.startListening": {
+      source: "string",
+      __return: "(boolean,string?)",
+    },
     "playdate.sound.micinput.getLevel": {
       __return: "number",
     },
     "playdate.sound.micinput.getSource": {
       __return: "string",
+    },
+    "playdate.ui.crankIndicator:draw": {
+      xOffset: "number",
+      yOffset: "number",
+    },
+    "playdate.ui.crankIndicator.clockwise": {
+      __value: "boolean",
+    },
+    "playdate.ui.crankIndicator:getBounds": {
+      __return: "(number, number, number, number)",
     },
     "playdate.ui.gridview:drawCell": {
       section: "integer",
@@ -1269,6 +1365,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.ui.gridview:drawSectionHeader": {
       section: "integer",
+    },
+    "playdate.ui.gridview.needsDisplay": {
+      __value: "READONLY_boolean",
     },
     "playdate.ui.gridview:setNumberOfSections": {
       num: "integer",
@@ -1319,6 +1418,11 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.ui.gridview:getSelectedRow": {
       __return: "integer",
     },
+    "playdate.ui.gridview:selectPreviousRow": {
+      wrapSelection: "boolean",
+      scrollToSelection: "boolean",
+      animate: "boolean",
+    },
     "playdate.ui.gridview:selectNextColumn": {
       wrapSelection: "boolean",
     },
@@ -1326,6 +1430,15 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       wrapSelection: "boolean",
       scrollToSelection: "boolean",
       animate: "boolean",
+    },
+    "playdate.ui.gridview.isScrolling": {
+      __value: "READONLY_boolean",
+    },
+    "playdate.ui.gridview.easingAmplitude": {
+      __value: "number",
+    },
+    "playdate.ui.gridview.easingPeriod": {
+      __value: "number",
     },
     "playdate.graphics.animation.loop.new": {
       shouldLoop: "boolean",
@@ -1348,118 +1461,5 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.graphics.animation.blinker:stop": {
       __return: null,
-    },
-    "json.encode": {
-      table: "table",
-    },
-    "json.encodePretty": {
-      table: "table",
-    },
-    "json.encodeToFile": {
-      table: "table",
-    },
-    "playdate.menu:addMenuItem": {
-      callback: "fun()",
-    },
-    "playdate.datastore.write": {
-      table: "table",
-    },
-    "playdate.timer.new": {
-      callback: "fun(...)",
-      "...": "any",
-    },
-    "playdate.timer.performAfterDelay": {
-      callback: "fun(...)",
-      "...": "any",
-    },
-    "playdate.timer.currentTime": {
-      __value: "READONLY_number",
-    },
-    "playdate.timer.timeLeft": {
-      __value: "READONLY_number",
-    },
-    "playdate.frameTimer.new": {
-      callback: "fun(...)",
-      "...": "any",
-    },
-    "playdate.frameTimer.performAfterDelay": {
-      callback: "fun(...)",
-      "...": "any",
-    },
-    "playdate.menu.item:setCallback": {
-      callback: "fun()",
-    },
-    "playdate.graphics.tilemap:setImageTable": {
-      table: "pd_imagetable",
-    },
-    "playdate.sound.sequence:play": {
-      finishCallback: "fun(pd_sequence)",
-    },
-    "playdate.geometry.arc.clockwise": {
-      __value: "boolean",
-    },
-    "playdate.geometry.rect.origin": {
-      __value: "READONLY_pd_point",
-    },
-    "playdate.geometry.rect.size": {
-      __value: "READONLY_pd_size",
-    },
-    "playdate.geometry.rect.top": {
-      __value: "READONLY_number",
-    },
-    "playdate.geometry.rect.bottom": {
-      __value: "READONLY_number",
-    },
-    "playdate.geometry.rect.right": {
-      __value: "READONLY_number",
-    },
-    "playdate.geometry.rect.left": {
-      __value: "READONLY_number",
-    },
-    "playdate.metadata": {
-      __value: "pd_metadata",
-    },
-    "playdate.sound.synth:setWavetable": {
-      sample: "pd_sample",
-      samplesize: "integer",
-      xsize: "integer",
-      ysize: "integer",
-    },
-    "playdate.sound.lfo:setStartPhase": {
-      phase: "number",
-    },
-    "playdate.ui.crankIndicator:draw": {
-      xOffset: "number",
-      yOffset: "number",
-    },
-    "playdate.ui.crankIndicator:getBounds": {
-      __return: "(number, number, number, number)",
-    },
-    "playdate.setButtonQueueSize": {
-      size: "number",
-    },
-    "playdate.serialMessageReceived": {
-      message: "string",
-    },
-    "playdate.display.getInverted": {
-      __return: "boolean",
-    },
-    "playdate.graphics.drawLine": {
-      ls: "pd_lineSegment",
-    },
-    "playdate.graphics.sprite.getAlwaysRedraw": {
-      __return: "boolean",
-    },
-    "playdate.graphics.sprite:collisionsEnabled": {
-      __return: "boolean",
-    },
-    "playdate.sound.micinput.startListening": {
-      source: "string",
-      __return: "(boolean,string?)",
-    },
-    "playdate.ui.gridview:selectPreviousRow": {
-      wrapSelection: "boolean",
-      scrollToSelection: "boolean",
-      animate: "boolean",
     },
   };

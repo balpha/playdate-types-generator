@@ -22,6 +22,7 @@ export function generateAnnotation() {
   var result = [] as string[];
   var tbd = [...Object.values(tree)] as TreeClass[];
   var unknowns = JSON.parse(JSON.stringify(HARDCODED_TYPES));
+  var used_hardcoded_types = {} as typeof HARDCODED_TYPES;
   function add(
     step: TreeClass | TreeFunctionOrVariable | TreeOperator,
     parentType: string
@@ -60,6 +61,10 @@ export function generateAnnotation() {
             pName in HARDCODED_TYPES[step.fullname]
           ) {
             pType = HARDCODED_TYPES[step.fullname][pName];
+            used_hardcoded_types[step.fullname] =
+              used_hardcoded_types[step.fullname] ?? {};
+            used_hardcoded_types[step.fullname][pName] =
+              HARDCODED_TYPES[step.fullname][pName];
           } else {
             pType = inferParameterType(pName, step.name, step.doc, parentType);
           }
@@ -85,6 +90,10 @@ export function generateAnnotation() {
           hardcodingKey in HARDCODED_TYPES[step.fullname]
         ) {
           returnType = HARDCODED_TYPES[step.fullname][hardcodingKey];
+          used_hardcoded_types[step.fullname] =
+            used_hardcoded_types[step.fullname] ?? {};
+          used_hardcoded_types[step.fullname][hardcodingKey] =
+            HARDCODED_TYPES[step.fullname][hardcodingKey];
         } else {
           returnType = inferReturnType(step.name, step.doc, parentType);
           if (!returnType && step.isVariable) {
@@ -225,8 +234,9 @@ export function generateAnnotation() {
   }
 
   return {
-    annotationFile: result.join("\n"),
+    annotationFile: result.join("\n") + "\n",
     unknownsAndHardcodedJSON: JSON.stringify(unknowns, undefined, 2),
     unknownsAndHardcoded: unknowns,
+    usedHardcodedJSON: JSON.stringify(used_hardcoded_types, undefined, 2),
   };
 }
