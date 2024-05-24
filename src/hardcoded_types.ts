@@ -26,6 +26,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.metadata": {
       __value: "pd_metadata",
     },
+    "playdate.restart": {
+      arg: "string",
+    },
     "playdate.getSystemMenu": {
       __return: "pd_menu",
     },
