@@ -36,6 +36,13 @@ export function writeConstantFields(result: string[], name: string) {
       "Inside",
     ]);
     constants("kVariant", "pd_font_variant", ["Normal", "Bold", "Italic"]);
+    constants("kWrap", "pd_wrap_mode", [
+      "Clip",
+      "TruncateEnd",
+      "Character",
+      "Word",
+    ]);
+    constants("kAlign", "pd_text_alignment", ["Left", "Center", "Right"]);
   } else if (name === "image") {
     constants("kDitherType", "pd_dither_type", [
       "None",
@@ -54,6 +61,7 @@ export function writeConstantFields(result: string[], name: string) {
     constants("kLanguage", "pd_language", ["English", "Japanese"]);
   } else if (name === "file") {
     constants("kFile", "pd_filemode", ["Read", "Write", "Append"]);
+    constants("kSeek", "pd_seek_mode", ["Set", "FromCurrent", "FromEnd"]);
   } else if (name === "keyboard") {
     constants("kCapitalization", "pd_capitalization", [
       "Normal",

@@ -403,6 +403,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.file.file:seek": {
       offset: "number",
+      whence: "pd_seek_mode",
     },
     "playdate.file.file:tell": {
       __return: "number",
@@ -1464,5 +1465,29 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.graphics.animation.blinker:stop": {
       __return: null,
+    },
+    "playdate.sound.channel:getDryLevelSignal": {
+      __return: "pd_signal",
+    },
+    "playdate.sound.channel:getWetLevelSignal": {
+      __return: "pd_signal",
+    },
+    "playdate.sound.signal:getValue": {
+      __return: "number",
+    },
+    "playdate.sound.lfo:getValue": {
+      __return: "number",
+    },
+    "playdate.sound.envelope:getValue": {
+      __return: "number",
+    },
+    "playdate.sound.instrument:setPitchBend": {
+      amount: "number",
+    },
+    "playdate.sound.instrument:setPitchBendRange": {
+      halfsteps: "number",
+    },
+    "playdate.sound.controlsignal:getValue": {
+      __return: "number",
     },
   };

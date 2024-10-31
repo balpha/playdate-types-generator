@@ -126,6 +126,8 @@ export function writePrefix(
     "pd_waveform",
     "pd_lfo_type",
     "pd_sound_filter",
+    "pd_wrap_mode",
+    "pd_seek_mode",
   ].forEach((c) => result.push(`---@class ${c}`));
 
   result.push("", "---@class pd_time_table");

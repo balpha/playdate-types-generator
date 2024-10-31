@@ -112,6 +112,8 @@ export function inferParameterType(
     inferredType = "pd_effect";
   } else if (["node"].includes(parameterName)) {
     inferredType = "pd_node";
+  } else if (["wrapMode"].includes(parameterName)) {
+    inferredType = "pd_wrap_mode";
   } else if (parameterName === "mode" && functionName === "setImageDrawMode") {
     inferredType = "pd_draw_mode";
   } else if (
