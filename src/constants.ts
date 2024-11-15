@@ -36,12 +36,7 @@ export function writeConstantFields(result: string[], name: string) {
       "Inside",
     ]);
     constants("kVariant", "pd_font_variant", ["Normal", "Bold", "Italic"]);
-    constants("kWrap", "pd_wrap_mode", [
-      "Clip",
-      "TruncateEnd",
-      "Character",
-      "Word",
-    ]);
+    constants("kWrap", "pd_wrap_mode", ["Clip", "Character", "Word"]);
     constants("kAlign", "pd_text_alignment", ["Left", "Center", "Right"]);
   } else if (name === "image") {
     constants("kDitherType", "pd_dither_type", [
