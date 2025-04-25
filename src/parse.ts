@@ -94,6 +94,10 @@ export function parse(
 
   // we don't really have to look at stuff like nested brackets -- as soon as we find
   // an opening square bracket, everything after that is optional.
+  //
+  // TODO: It seems like the team is adding more and more methods where required arguments
+  // are followe optional ones. If that's actually a thing (and not just errors in documentation),
+  // we'll have to generate a lot of overloads.
   const bracketIndex = parameters.indexOf("[");
 
   const optOrNot =

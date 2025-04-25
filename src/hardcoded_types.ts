@@ -1490,4 +1490,99 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.sound.controlsignal:getValue": {
       __return: "number",
     },
+    "playdate.network.setEnabled": {
+      function: "fun(string|nil)",
+    },
+    "playdate.network.getStatus": {
+      __return: "pd_network_status",
+    },
+    "playdate.graphics.video:getCurrentFrame": {
+      __return: "number",
+    },
+    "playdate.network.http.new": {
+      server: "string",
+      port: "number?",
+      reason: "string?",
+    },
+    "playdate.network.http.requestAccess": {
+      server: "string?",
+      port: "number?",
+      usessl: "boolean?",
+      reason: "string?",
+    },
+    "playdate.network.http:setByteRange": {
+      from: "number",
+      to: "number",
+    },
+    "playdate.network.http:get": {
+      headers: "(string|string[]|table)?",
+      __return: "(boolean,string|nil)",
+    },
+    "playdate.network.http:post": {
+      headers: "(string|string[]|table)?",
+      data: "string",
+      __return: "(boolean,string|nil)",
+    },
+    "playdate.network.http:getError": {
+      __return: "(string|nil)",
+    },
+    "playdate.network.http:getProgress": {
+      __return: "(number,number)",
+    },
+    "playdate.network.http:setReadTimeout": {
+      __return: "nil",
+    },
+    "playdate.network.http:setReadBufferSize": {
+      bytes: "number",
+    },
+    "playdate.network.http:read": {
+      __return: "string",
+    },
+    "playdate.network.http:getResponseStatus": {
+      __return: "number",
+    },
+    "playdate.network.http:setRequestCallback": {
+      function: "fun()",
+    },
+    "playdate.network.http:setHeadersReadCallback": {
+      function: "fun()",
+    },
+    "playdate.network.http:setRequestCompleteCallback": {
+      function: "fun()",
+    },
+    "playdate.network.http:setConnectionClosedCallback": {
+      function: "fun()",
+    },
+    "playdate.network.tcp.new": {
+      server: "string",
+      port: "number",
+      usessl: "boolean?",
+      reason: "string?",
+    },
+    "playdate.network.tcp.requestAccess": {
+      server: "string?",
+      port: "number?",
+      reason: "string?",
+    },
+    "playdate.network.tcp:open": {
+      connectCallback: "fun(boolean,string)",
+    },
+    "playdate.network.tcp:setReadTimeout": {
+      __return: "nil",
+    },
+    "playdate.network.tcp:setReadBufferSize": {
+      bytes: "number",
+    },
+    "playdate.network.tcp:read": {
+      __return: "string",
+    },
+    "playdate.network.tcp:write": {
+      data: "string",
+    },
+    "playdate.network.tcp:getError": {
+      __return: "string|nil",
+    },
+    "playdate.network.tcp:setConnectionClosedCallback": {
+      function: "fun()",
+    },
   };

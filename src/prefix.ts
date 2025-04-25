@@ -128,6 +128,7 @@ export function writePrefix(
     "pd_sound_filter",
     "pd_wrap_mode",
     "pd_seek_mode",
+    "pd_network_status",
   ].forEach((c) => result.push(`---@class ${c}`));
 
   result.push("", "---@class pd_time_table");

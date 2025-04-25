@@ -104,6 +104,12 @@ export function writeConstantFields(result: string[], name: string) {
       "LowShelf",
       "HighShelf",
     ]);
+  } else if (name === "network") {
+    constants("kStatus", "pd_network_status", [
+      "NotConnected",
+      "Connected",
+      "NotAvailable",
+    ]);
   }
 
   if (["geometry", "graphics"].includes(name)) {

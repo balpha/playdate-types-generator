@@ -40,6 +40,20 @@ export function collectDataFromDom(): PdFunction[] {
   const sroicClass = sroic?.className;
   sroic?.classList.add("method");
 
+  const getStatus = document.getElementById("f-network.getStatus");
+  let getStatusContent = getStatus?.querySelector(".content");
+  if (getStatus && !getStatusContent) {
+    getStatusContent = document.createElement("div");
+    getStatusContent.classList.add("content");
+    getStatus
+      .querySelectorAll("p")
+      .forEach((n) => getStatusContent?.appendChild(n));
+    getStatus.appendChild(getStatusContent);
+  }
+  if (getStatus?.nextElementSibling?.classList?.contains("ulist")) {
+    getStatusContent?.appendChild(getStatus.nextElementSibling);
+  }
+
   const elements = document.querySelectorAll<HTMLElement>(
     ".function, .method, .callback, .variable, .property"
   );
@@ -91,6 +105,15 @@ export function collectDataFromDom(): PdFunction[] {
 
     if (titleText === "playdate.sound.instrument.new([synth])") {
       isMethod = false;
+    }
+
+    // HACK: there's some weird duplication in the docs on this one, *and* there's
+    // some special overload behavior -- so for now we just modify one of the dupes
+    if (
+      titleText === "playdate.network.http:post(path, [headers], data)" &&
+      documentation.includes("Equivalent to calling")
+    ) {
+      titleText = titleText.replace("[headers], ", "");
     }
 
     const parseResults = titleText
