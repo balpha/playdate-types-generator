@@ -1445,6 +1445,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
       __value: "number",
     },
     "playdate.graphics.animation.loop.new": {
+      imageTable: "pd_imagetable|pd_image[]",
       shouldLoop: "boolean",
     },
     "playdate.graphics.animation.loop:image": {
