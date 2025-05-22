@@ -178,13 +178,19 @@ export function collectDataFromDom(): PdFunction[] {
   function additionalInstanceProperties(
     type: string,
     props: string[],
-    doc: string
+    doc: string | ((prop: string) => string)
   ) {
+    let docFn: (prop: string) => string;
+    if (typeof doc === "string") {
+      docFn = () => doc;
+    } else {
+      docFn = doc;
+    }
     props.forEach((n) => {
       const line = type + "." + n;
       funs.push({
         titleText: line,
-        documentation: doc,
+        documentation: docFn(n),
         isCallback: false,
         isMethod: true,
         isVariable: true,
@@ -239,6 +245,43 @@ export function collectDataFromDom(): PdFunction[] {
     "playdate.geometry.vector2D",
     ["dx", "dy"],
     "You can directly read or write `dx`, or `dy` values to a vector2D."
+  );
+
+  const loopDoc = funs.filter((f) =>
+    f.titleText.startsWith("playdate.graphics.animation.loop.new(")
+  )[0].documentation;
+
+  additionalInstanceProperties(
+    "playdate.graphics.animation.loop",
+    [
+      "delay",
+      "startFrame",
+      "endFrame",
+      "frame",
+      "step",
+      "shouldLoop",
+      "paused",
+    ],
+    (prop) => loopDoc.match(new RegExp("`" + prop + "` : (.*)"))![0]
+  );
+
+  const blinkerDoc = funs.filter((f) =>
+    f.titleText.startsWith("playdate.graphics.animation.blinker.new(")
+  )[0].documentation;
+
+  additionalInstanceProperties(
+    "playdate.graphics.animation.blinker",
+    [
+      "onDuration",
+      "offDuration",
+      "loop",
+      "cycles",
+      "default",
+      "counter",
+      "on",
+      "running",
+    ],
+    (prop) => blinkerDoc.match(new RegExp("`" + prop + "`: (.*)"))![0]
   );
 
   const rectCanBeValues = funs.filter(

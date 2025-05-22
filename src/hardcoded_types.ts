@@ -1586,4 +1586,43 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.network.tcp:setConnectionClosedCallback": {
       function: "fun()",
     },
+    "playdate.graphics.animation.loop.startFrame": {
+      __value: "number",
+    },
+    "playdate.graphics.animation.loop.endFrame": {
+      __value: "number",
+    },
+    "playdate.graphics.animation.loop.frame": {
+      __value: "number",
+    },
+    "playdate.graphics.animation.loop.step": {
+      __value: "number",
+    },
+    "playdate.graphics.animation.loop.shouldLoop": {
+      __value: "boolean",
+    },
+    "playdate.graphics.animation.loop.paused": {
+      __value: "boolean",
+    },
+    "playdate.graphics.animation.blinker.onDuration": {
+      __value: "number",
+    },
+    "playdate.graphics.animation.blinker.offDuration": {
+      __value: "number",
+    },
+    "playdate.graphics.animation.blinker.loop": {
+      __value: "boolean",
+    },
+    "playdate.graphics.animation.blinker.cycles": {
+      __value: "number",
+    },
+    "playdate.graphics.animation.blinker.counter": {
+      __value: "READONLY_number",
+    },
+    "playdate.graphics.animation.blinker.on": {
+      __value: "READONLY_boolean",
+    },
+    "playdate.graphics.animation.blinker.running": {
+      __value: "READONLY_boolean",
+    },
   };
