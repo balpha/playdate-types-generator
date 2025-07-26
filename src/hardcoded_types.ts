@@ -1447,6 +1447,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.animation.loop.new": {
       imageTable: "pd_imagetable|pd_image[]",
       shouldLoop: "boolean",
+      interval: "number",
     },
     "playdate.graphics.animation.loop:image": {
       __return: "pd_image",
@@ -1624,5 +1625,12 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.graphics.animation.blinker.running": {
       __value: "READONLY_boolean",
+    },
+    "playdate.network.http:query": {
+      headers: "(string|string[]|table)?",
+      data: "string",
+    },
+    "playdate.graphics.animation.loop.interval": {
+      __value: "number",
     },
   };

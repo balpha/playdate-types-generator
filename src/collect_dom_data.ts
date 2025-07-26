@@ -254,7 +254,7 @@ export function collectDataFromDom(): PdFunction[] {
   additionalInstanceProperties(
     "playdate.graphics.animation.loop",
     [
-      "delay",
+      "interval",
       "startFrame",
       "endFrame",
       "frame",
