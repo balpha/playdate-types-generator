@@ -1633,4 +1633,13 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.graphics.animation.loop.interval": {
       __value: "number",
     },
+    "playdate.sound.lfo:setOffset": {
+      center: "number",
+    },
+    "playdate.sound.lfo:setScale": {
+      depth: "number",
+    },
+    "playdate.sound.controlsignal:setOffset": {
+      offset: "number",
+    },
   };
