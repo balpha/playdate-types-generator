@@ -1304,8 +1304,9 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.sound.instrument:addVoice": {
       v: "pd_synth",
       note: "string|number",
-      rangeend: "string|number",
       transpose: "number",
+      rangeStart: "string|number",
+      rangeEnd: "string|number",
     },
     "playdate.sound.instrument:setTranspose": {
       halfsteps: "number",
@@ -1342,6 +1343,7 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     "playdate.sound.micinput.recordToSample": {
       buffer: "pd_sample",
       completionCallback: "fun(pd_sample)",
+      purpose: "string",
     },
     "playdate.sound.micinput.startListening": {
       source: "string",
@@ -1641,5 +1643,37 @@ export const HARDCODED_TYPES: { [s: string]: { [k: string]: string | null } } =
     },
     "playdate.sound.controlsignal:setOffset": {
       offset: "number",
+    },
+    "playdate.exitToLauncher": {
+      __return: null,
+    },
+    "playdate.getLocalizedText": {
+      key: "string",
+    },
+    "playdate.graphics.sprite:setCenter": {
+      __return: null,
+    },
+    "playdate.network.https.new": {
+      server: "string",
+      port: "number?",
+      reason: "string?",
+    },
+    "playdate.sound.channel:getOutputAsSource": {
+      __return: "pd_source",
+    },
+    "playdate.sound.lfo:setRandomSeed": {
+      value: "number",
+    },
+    "playdate.sound.bitcrusher:setDepth": {
+      amt: "number",
+    },
+    "playdate.sound.bitcrusher:setDownsampling": {
+      amt: "number",
+    },
+    "playdate.sound.instrument:allNotesOff": {
+      when: "number",
+    },
+    "playdate.sound.micinput.requestAccess": {
+      reason: "string",
     },
   };

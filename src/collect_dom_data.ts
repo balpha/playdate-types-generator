@@ -18,7 +18,7 @@ export interface PdFunction {
 
 function codeElements() {
   return [...document.querySelectorAll<HTMLElement>("em")].filter(
-    (e) => e.childElementCount === 0
+    (e) => e.childElementCount === 0,
   );
 }
 
@@ -27,7 +27,7 @@ function wrapCodeInBackticks() {
 }
 function removeBackticksAroundCode() {
   codeElements().forEach(
-    (e) => (e.innerText = e.innerText.replace(/^`|`$/g, ""))
+    (e) => (e.innerText = e.innerText.replace(/^`|`$/g, "")),
   );
 }
 
@@ -35,7 +35,7 @@ export function collectDataFromDom(): PdFunction[] {
   const funs = [] as PdFunction[];
 
   const sroic = document.getElementById(
-    "m-graphics.sprite.setRedrawsOnImageChange"
+    "m-graphics.sprite.setRedrawsOnImageChange",
   );
   const sroicClass = sroic?.className;
   sroic?.classList.add("method");
@@ -55,7 +55,7 @@ export function collectDataFromDom(): PdFunction[] {
   }
 
   const elements = document.querySelectorAll<HTMLElement>(
-    ".function, .method, .callback, .variable, .property"
+    ".function, .method, .callback, .variable, .property",
   );
   wrapCodeInBackticks();
 
@@ -65,7 +65,7 @@ export function collectDataFromDom(): PdFunction[] {
       ?.innerText?.trim()
       .replace(
         "playdate.ui.gridview:setNumberOfRows(…​)",
-        "playdate.ui.gridview:setNumberOfRows(count1, ...)"
+        "playdate.ui.gridview:setNumberOfRows(count1, ...)",
       );
 
     if (!titleText) {
@@ -77,11 +77,11 @@ export function collectDataFromDom(): PdFunction[] {
     titleText = titleText
       .replace(
         "playdate.geometry.polygon.new(p1, p2, ..., pn)",
-        "playdate.geometry.polygon.new(p1, p2, [p3, p4, p5, p6,] ...)"
+        "playdate.geometry.polygon.new(p1, p2, [p3, p4, p5, p6,] ...)",
       )
       .replace(
         "playdate.geometry.polygon.new(x1, y1, x2, y2, ..., xn, yn)",
-        "playdate.geometry.polygon.new(x1, y1, x2, y2, [x3, y3,] ...)"
+        "playdate.geometry.polygon.new(x1, y1, x2, y2, [x3, y3,] ...)",
       );
 
     let documentation =
@@ -107,6 +107,19 @@ export function collectDataFromDom(): PdFunction[] {
       isMethod = false;
     }
 
+    if (
+      titleText.startsWith("playdate.sound.sequence:stop") &&
+      documentation.includes("playdate.sound.instrument:allNotesOff")
+    ) {
+      titleText = titleText.replace("sequence", "instrument");
+    }
+    if (
+      titleText.startsWith("playdate.sound.sequence:isPlaying") &&
+      documentation.includes("if any voice in the instrument")
+    ) {
+      titleText = titleText.replace("sequence", "instrument");
+    }
+
     // HACK: there's some weird duplication in the docs on this one, *and* there's
     // some special overload behavior -- so for now we just modify one of the dupes
     if (
@@ -119,7 +132,7 @@ export function collectDataFromDom(): PdFunction[] {
     const parseResults = titleText
       .split("\n")
       .map((overloadLine) =>
-        parse(overloadLine, isCallback, isMethod, isVariable)
+        parse(overloadLine, isCallback, isMethod, isVariable),
       )
       .filter(isSuccessful);
 
@@ -140,7 +153,7 @@ export function collectDataFromDom(): PdFunction[] {
         otherTitleText,
         isCallback,
         isMethod,
-        isVariable
+        isVariable,
       );
 
       if (isSuccessful(otherParseResult)) {
@@ -178,7 +191,7 @@ export function collectDataFromDom(): PdFunction[] {
   function additionalInstanceProperties(
     type: string,
     props: string[],
-    doc: string | ((prop: string) => string)
+    doc: string | ((prop: string) => string),
   ) {
     let docFn: (prop: string) => string;
     if (typeof doc === "string") {
@@ -202,59 +215,59 @@ export function collectDataFromDom(): PdFunction[] {
   additionalInstanceProperties(
     "playdate.pathfinder.node",
     ["x", "y", "id"],
-    "You can directly read or write `x`, `y` and `id` values on a `playdate.pathfinder.node`."
+    "You can directly read or write `x`, `y` and `id` values on a `playdate.pathfinder.node`.",
   );
 
   additionalInstanceProperties(
     "playdate.geometry.point",
     ["x", "y"],
-    "You can directly read or write the `x` and `y` values of a point."
+    "You can directly read or write the `x` and `y` values of a point.",
   );
 
   additionalInstanceProperties(
     "playdate.geometry.arc",
     ["x", "y", "radius", "startAngle", "endAngle", "clockwise"],
-    "You can directly read or write the `x`, `y`, `radius`, `startAngle`, `endAngle` and `clockwise` values of an arc."
+    "You can directly read or write the `x`, `y`, `radius`, `startAngle`, `endAngle` and `clockwise` values of an arc.",
   );
 
   additionalInstanceProperties(
     "playdate.geometry.lineSegment",
     ["x1", "y1", "x2", "y2"],
-    "You can directly read or write `x1`, `y1`, `x2`, or `y2` values to a lineSegment."
+    "You can directly read or write `x1`, `y1`, `x2`, or `y2` values to a lineSegment.",
   );
 
   additionalInstanceProperties(
     "playdate.geometry.rect",
     ["x", "y", "width", "height"],
-    "You can directly read or write `x`, `y`, `width`, or `height` values to a rect."
+    "You can directly read or write `x`, `y`, `width`, or `height` values to a rect.",
   );
 
   additionalInstanceProperties(
     "playdate.geometry.rect",
     ["top", "bottom", "right", "left", "origin", "size"],
-    "**READ-ONLY**. While you can directly read or write `x`, `y`, `width`, or `height` values to a rect, the values of `top`, `bottom`, `right`, `left`, `origin`, and `size` are read-only."
+    "**READ-ONLY**. While you can directly read or write `x`, `y`, `width`, or `height` values to a rect, the values of `top`, `bottom`, `right`, `left`, `origin`, and `size` are read-only.",
   );
 
   additionalInstanceProperties(
     "playdate.geometry.size",
     ["width", "height"],
-    "You can directly read or write  the `width` and `height` values of a `size`."
+    "You can directly read or write  the `width` and `height` values of a `size`.",
   );
 
   additionalInstanceProperties(
     "playdate.geometry.vector2D",
     ["dx", "dy"],
-    "You can directly read or write `dx`, or `dy` values to a vector2D."
+    "You can directly read or write `dx`, or `dy` values to a vector2D.",
   );
 
   const loopDoc = funs.filter((f) =>
-    f.titleText.startsWith("playdate.graphics.animation.loop.new(")
+    f.titleText.startsWith("playdate.graphics.animation.loop.new("),
   )[0].documentation;
 
   additionalInstanceProperties(
     "playdate.graphics.animation.loop",
     [
-      "interval",
+      "delay",
       "startFrame",
       "endFrame",
       "frame",
@@ -262,11 +275,11 @@ export function collectDataFromDom(): PdFunction[] {
       "shouldLoop",
       "paused",
     ],
-    (prop) => loopDoc.match(new RegExp("`" + prop + "` : (.*)"))![0]
+    (prop) => loopDoc.match(new RegExp("`" + prop + "` : (.*)"))![0],
   );
 
   const blinkerDoc = funs.filter((f) =>
-    f.titleText.startsWith("playdate.graphics.animation.blinker.new(")
+    f.titleText.startsWith("playdate.graphics.animation.blinker.new("),
   )[0].documentation;
 
   additionalInstanceProperties(
@@ -281,16 +294,16 @@ export function collectDataFromDom(): PdFunction[] {
       "on",
       "running",
     ],
-    (prop) => blinkerDoc.match(new RegExp("`" + prop + "`: (.*)"))![0]
+    (prop) => blinkerDoc.match(new RegExp("`" + prop + "`: (.*)"))![0],
   );
 
   const rectCanBeValues = funs.filter(
     (f) =>
       f.titleText.includes("sourceRect") &&
       (f.documentation.includes(
-        "can be a playdate.geometry.rect or four integers"
+        "can be a playdate.geometry.rect or four integers",
       ) ||
-        f.titleText.startsWith("playdate.graphics.tilemap:drawIgnoringOffset"))
+        f.titleText.startsWith("playdate.graphics.tilemap:drawIgnoringOffset")),
   );
   rectCanBeValues.forEach((fn) => {
     const additions = fn.parseResults
@@ -308,8 +321,8 @@ export function collectDataFromDom(): PdFunction[] {
             ).replace("sourceRect", "rx, ry, rw, rh"),
             fn.isCallback,
             fn.isMethod,
-            fn.isVariable
-          ) as SuccessfulParseResult
+            fn.isVariable,
+          ) as SuccessfulParseResult,
       );
     fn.parseResults.push(...additions);
   });
